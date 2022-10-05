@@ -75,6 +75,7 @@ Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudSto
 ################################################################################################################################################################
 # Services
 ################################################################################################################################################################
+"Configuring services..."
 # Always include a trailing "*" to account for per-user services
 $ServicesDisables_Microsoft = @(
 	# General / Unsorted
@@ -202,6 +203,7 @@ foreach ($rule in $ServicesDisables_Microsoft) {
 ################################################################################################################################################################
 # Tasks
 ################################################################################################################################################################
+"Configuring scheduled tasks..."
 # Get-ScheduledTask | Format-Table URI, State, Description -AutoSize
 $TaskDisables = @(
 	"*MicrosoftEdge*",
@@ -258,16 +260,7 @@ $TaskDisables = @(
 $null = takeown /F "C:\Windows\System32\Tasks\Microsoft\Windows\UpdateOrchestrator" /A /R
 $null = icacls "C:\Windows\System32\Tasks\Microsoft\Windows\UpdateOrchestrator" /grant *S-1-5-32-544:F /T
 
-$TaskList = Get-ScheduledTask | Where State -NE "Disabled"
-foreach ($task in $TaskDisables) {
-	$found = $TaskList | Where URI -Like $task
-	
-	foreach ($f in $found) {
-		"Disabling task `"$($f.TaskName)`" ($($f.State))"
-		$f | Stop-ScheduledTask
-		$null = $f | Disable-ScheduledTask
-	}
-}
+Disable-TasksLike $TaskDisables
 
 ################################################################################################################################################################
 # Firewall

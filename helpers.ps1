@@ -48,6 +48,21 @@ function Download {
 	}
 }
 
+function Disable-TasksLike {
+	param ([Parameter(Mandatory)] $Tasks)
+	
+	$TaskList = Get-ScheduledTask | Where State -NE "Disabled"
+	foreach ($task in $Tasks) {
+		$found = $TaskList | Where URI -Like $task
+		
+		foreach ($f in $found) {
+			"Disabling task `"$($f.TaskName)`" ($($f.State))"
+			$f | Stop-ScheduledTask
+			$null = $f | Disable-ScheduledTask
+		}
+	}
+}
+
 function Set-Registry {
 	param (
 		[Parameter(Mandatory)][string] $Path,
