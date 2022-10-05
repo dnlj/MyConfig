@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+	<style>
+		/* Adapted from: https://github.com/atom/one-dark-syntax/blob/master/styles/colors.less */
+		:root {
+			--syntax-hue:          220;
+			--syntax-saturation:   13%;
+			--syntax-brightness:   18%;
+
+			/* Monochrome ----------------------------------- */
+			--mono-1: hsl(var(--syntax-hue), 14%, 71%);
+			--mono-2: hsl(var(--syntax-hue),  9%, 55%);
+			--mono-3: hsl(var(--syntax-hue), 10%, 40%);
+
+			/* Colors ----------------------------------- */
+			--hue-1:   hsl(187, 47%, 55%); --cyan: var(--hue-1);
+			--hue-2:   hsl(207, 82%, 66%); --blue: var(--hue-2);
+			--hue-3:   hsl(286, 60%, 67%); --purple: var(--hue-3);
+			--hue-4:   hsl( 95, 38%, 62%); --green: var(--hue-4);
+
+			--hue-5:   hsl(355, 65%, 65%); --red: var(--hue-5);
+			--hue-5-2: hsl(  5, 48%, 51%); --red-2: var(--hue-5-2);
+
+			--hue-6:   hsl( 29, 54%, 61%); --orange: var(--hue-6);
+			--hue-6-2: hsl( 39, 67%, 69%); --orange-2: var(--hue-6-2);
+
+
+			/* Base colors ----------------------------------- */
+			--syntax-fg: var(--mono-1);
+			--white: var(--syntax-fg);
+			
+			--syntax-bg: hsl(var(--syntax-hue), var(--syntax-saturation), var(--syntax-brightness));
+			--black: var(--syntax-bg);
+			
+			/*--syntax-gutter: darken(var(--syntax-fg), 26%);*/
+			/*--syntax-guide:  fade(var(--syntax-fg), 15%);*/
+			--syntax-accent: hsl(var(--syntax-hue), 100%, 66% );
+			
+			background: var(--syntax-bg);
+			color: var(--syntax-fg);
+			font-family: Consolas, monospace;
+		}
+		.box {
+			width: 128px;
+			height: 128px;
+		}
+		.colors {
+			display: flex;
+			gap: 1em;
+		}
+		.colors > div:not([style*="black"]) {
+			color: var(--syntax-bg);
+		}
+		.colors > div {
+			width: 128px;
+			height: 128px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			align-items: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="colors" style="margin-bottom: 1em">
+		<div class="box" style="background: var(--syntax-fg)"></div>
+		<div class="box" style="background: var(--syntax-bg)"></div>
+		<div class="box" style="background: var(--mono-1)"></div>
+		<div class="box" style="background: var(--mono-2)"></div>
+		<div class="box" style="background: var(--mono-3)"></div>
+		<div class="box" style="background: var(--hue-1)"></div>
+		<div class="box" style="background: var(--hue-2)"></div>
+		<div class="box" style="background: var(--hue-3)"></div>
+		<div class="box" style="background: var(--hue-4)"></div>
+		<div class="box" style="background: var(--hue-5)"></div>
+		<div class="box" style="background: var(--hue-5-2)"></div>
+		<div class="box" style="background: var(--hue-6)"></div>
+		<div class="box" style="background: var(--hue-6-2)"></div>
+	</div>
+	<div class="colors">
+		<div style="background: var(--mono-1)"><div>Mono 1</div><div>171,178,191</div><div>RGB: ABB2BF</div><div>BGR: BFB2AB</div></div>
+		<div style="background: var(--mono-2)"><div>Mono 2</div><div>130,137,151</div><div>RGB: 828997</div><div>BGR: 978982</div></div>
+		<div style="background: var(--mono-3)"><div>Mono 3</div><div>92,99,112</div><div>RGB: 5C6370</div><div>BGR: 70635C</div></div>
+		<div style="background: var(--black)"><div>Black</div><div>40,44,52</div><div>RGB: 282C34</div><div>BGR: 342C28</div></div>
+		<div style="background: var(--red)"><div>Red</div><div>224,108,117</div><div>RGB: E06C75</div><div>BGR: 756CE0</div></div>
+		<div style="background: var(--red-2)"><div>Red 2</div><div>190,80,70</div><div>RGB: BE5046</div><div>BGR: 4650BE</div></div>
+		<div style="background: var(--green)"><div>Green</div><div>152,195,121</div><div>RGB: 98C379</div><div>BGR: 79C398</div></div>
+		<div style="background: var(--orange)"><div>Orange</div><div>209,154,102</div><div>RGB: D19A66</div><div>BGR: 669AD1</div></div>
+		<div style="background: var(--orange-2)"><div>Orange 2</div><div>229,192,123</div><div>RGB: E5C07B</div><div>BGR: 7BC0E5</div></div>
+		<div style="background: var(--blue)"><div>Blue</div><div>97,175,239</div><div>RGB: 61AFEF</div><div>BGR: EFAF61</div></div>
+		<div style="background: var(--purple)"><div>Purple</div><div>198,120,221</div><div>RGB: C678DD</div><div>BGR: DD78C6</div></div>
+		<div style="background: var(--cyan)"><div>Cyan</div><div>86,182,194</div><div>RGB: 56B6C2</div><div>BGR: C2B656</div></div>
+		<div style="background: var(--white)"><div>White</div><div>171,178,191</div><div>RGB: ABB2BF</div><div>BGR: BFB2AB</div></div>
+	</div>
+</body>

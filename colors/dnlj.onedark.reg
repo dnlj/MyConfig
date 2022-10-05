@@ -1,0 +1,45 @@
+Windows Registry Editor Version 5.00
+
+; Foreground and background colors can be set with ScreenColors and PopupColors
+; See: https://web.archive.org/web/20221003084823/https://devblogs.microsoft.com/commandline/understanding-windows-console-host-settings/
+;
+; DWORD is in BGR hex format: 00BBGGRR
+;
+; NR  cmd.exe      PowerShell   One Dark    DWORD
+; --  -------      -----------  ----------  --------
+; 00  Black        Black        black       00342C28
+; 01  Blue         DarkBlue     blue        00EFAF61
+; 02  Green        DarkGreen    green       0079C398
+; 03  Aqua         DarkCyan     cyan        00C2B656
+; 04  Red          DarkRed      red         00756CE0
+; 05  Purple       DarkMagenta  purple      00DD78C6
+; 06  Yellow       DarkYellow   orange-1    00669AD1
+; 07  White        Gray         white       00BFB2AB
+; 08  Gray         DarkGray     mono-3      0070635C
+; 09  LightBlue    Blue         blue        00EFAF61
+; 10  LightGreen   Green        green       0079C398
+; 11  LightAqua    Cyan         cyan        00C2B656
+; 12  LightRed     Red          red-2       004650BE
+; 13  LightPurple  Magenta      purple      00DD78C6
+; 14  LightYellow  Yellow       orange-2    007BC0E5
+; 15  BrightWhite  White        white       00ffffff
+
+[HKEY_CURRENT_USER\Console]
+"ColorTable00"=dword:00342C28
+"ColorTable01"=dword:00EFAF61
+"ColorTable02"=dword:0079C398
+"ColorTable03"=dword:00C2B656
+"ColorTable04"=dword:00756CE0
+"ColorTable05"=dword:00DD78C6
+"ColorTable06"=dword:00669AD1
+"ColorTable07"=dword:00BFB2AB
+"ColorTable08"=dword:0070635C
+"ColorTable09"=dword:00EFAF61
+"ColorTable10"=dword:0079C398
+"ColorTable11"=dword:00C2B656
+"ColorTable12"=dword:004650BE
+"ColorTable13"=dword:00DD78C6
+"ColorTable14"=dword:007BC0E5
+"ColorTable15"=dword:00ffffff
+"ScreenColors"=dword:00000007
+"PopupColors"=dword:000000f5
