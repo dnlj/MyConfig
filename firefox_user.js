@@ -265,4 +265,5 @@ user_pref("browser.uitour.enabled", false);
 user_pref("browser.uitour.url", "");
 user_pref("pdfjs.enableScripting", false);
 user_pref("network.protocol-handler.external.ms-windows-store", false); // Disable Microsoft Store links
+user_pref("dom.event.clipboardevents.enabled", false);
 //user_pref("permissions.delegation.enabled", false);

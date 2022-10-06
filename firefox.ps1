@@ -183,20 +183,20 @@ if ($ff = Find-Firefox) {
 "Setting up user profile..."
 
 # Setup profile
-# http://kb.mozillazine.org/User.js_file
 & {
 	$Name = "dnlj"
 	$Path = Join-Path $Env:APPDATA "Mozilla\Firefox"
 	$ProfPath = (Join-Path $Path "Profiles\$Name")
-	$null = New-Item -Force -ItemType "directory" -Path $ProfPath
+	$null = New-Item -Force -ItemType "directory" -Path (Join-Path $ProfPath "chrome")
 	
 	# http://kb.mozillazine.org/Profiles.ini_file
-	$profString = "[General]`nStartWithLastProfile=1`n`n[Profile0]`nName=$Name`nIsRelative=1`nPath=Profiles/$Name`nDefault=1`n"
+	#$profString = "[General]`nStartWithLastProfile=1`nVersion=2`n`n[Profile0]`nName=$Name`nIsRelative=1`nPath=Profiles/$Name`nDefault=1`nLocked=1`n"
+	$profString = "[Install308046B0AF4A39CB]`nDefault=Profiles/$Name`nLocked=1`n`n[Profile0]`nName=$Name`nIsRelative=1`nPath=Profiles/$Name`nDefault=1`n`n[General]`nStartWithLastProfile=1`nVersion=2`n`n"
 	$profString | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $Path "profiles.ini")
 	'{"firstUse": 0,"created": 0}' | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $ProfPath "times.json")
 	
 	Copy-Item "firefox_user.js" -Destination (Join-Path $ProfPath "user.js")
-	#$UserJs | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $ProfPath "user.js")
+	Copy-Item "firefox_userChrome.css" -Destination (Join-Path $ProfPath "chrome/userChrome.css")
 }
 
 
@@ -205,7 +205,7 @@ if ($ff = Find-Firefox) {
 ################################################################################################################################################################
 # We have to launch FireFox to get it to create its scheduled tasks
 if ($installed -and $ff) {
-	& $ff "about:preferences"
+	& $ff "about:preferences" "https://drive.google.com/drive/my-drive" "https://github.com/dnlj/UserTweaks"
 
 	Start-Sleep -Seconds 3
 	for ($i = 1; $i -le 10; $i++) {
