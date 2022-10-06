@@ -1,9 +1,6 @@
 #Requires -RunAsAdministrator
 . .\helpers.ps1
 
-try { $null = Stop-Transcript } catch {}
-Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.firefox.$(Get-Date -F yyyyMMddTHHmmssffff).log"
-
 function Find-Firefox {
 	if ($install = Get-Item -Path "${Env:ProgramFiles}/*firefox*/firefox.exe") {
 	} elseif ($install = Get-Item -Path "${Env:ProgramFiles(x86)}/*firefox*/firefox.exe") {
@@ -58,6 +55,8 @@ if (Find-Firefox) {
 # https://github.com/mozilla/policy-templates/blob/master/README.md
 # https://wiki.mozilla.org/Security/Tracking_protection
 # https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/internals/preferences.html#preferences
+# https://www.stigviewer.com/stig/mozilla_firefox/
+#
 $policyRoot = @{}
 $policies = ($policyRoot.policies = @{})
 $policies[""]
@@ -82,6 +81,7 @@ $policies.OverridePostUpdatePage = "" # empty = no extra pages. startup.homepage
 $policies.PrimaryPassword = $false
 $policies.PromptForDownloadLocation = $true # browser.download.useDownloadDir
 $policies.ShowHomeButton = $true
+$policies.SanitizeOnShutdown = $false
 
 # Only supported on ESR
 #$policies.SearchEngines = @{}
@@ -148,7 +148,7 @@ $Extensions = @(
 	@{Name="Neat URL"; Id="3557562"; Url="https://addons.mozilla.org/en-US/firefox/addon/neat-url/"; UID="neaturl@hugsmile.eu"},
 	@{Name="NoScript"; Id="4002416"; Url="https://addons.mozilla.org/en-US/firefox/addon/noscript/"; UID="{73a6fe31-595d-460b-a920-fcc0f8843232}"},
 	@{Name="PoE Wiki Search"; Id="3840427"; Url="https://addons.mozilla.org/en-US/firefox/addon/poe-wiki-search/"; UID="{6b5a2fdc-482d-458c-95f3-9ac220b0b028}"},
-	@{Name="Privacy Possum"; Id="3360398"; Url="https://addons.mozilla.org/en-US/firefox/addon/privacy-possum/"; UID="woop-NoopscooPsnSXQ@jetpack"},
+	# Abandoned, we also have `privacy.resistFingerprinting` now. @{Name="Privacy Possum"; Id="3360398"; Url="https://addons.mozilla.org/en-US/firefox/addon/privacy-possum/"; UID="woop-NoopscooPsnSXQ@jetpack"},
 	@{Name="Recipe Filter"; Id="981509"; Url="https://addons.mozilla.org/en-US/firefox/addon/recipe-filter/"; UID="{8b2164f4-fdb6-47eb-b692-312cc6d04f6b}"},
 	@{Name="Reddit Enhancement Suite"; Id="3902655"; Url="https://addons.mozilla.org/en-US/firefox/addon/reddit-enhancement-suite/"; UID="jid1-xUfzOsOFlzSOXg@jetpack"},
 	@{Name="Return YouTube Dislike"; Id="4005382"; Url="https://addons.mozilla.org/en-US/firefox/addon/return-youtube-dislikes/"; UID="{762f9885-5a13-4abd-9c77-433dcd38b8fd}"},
@@ -156,7 +156,7 @@ $Extensions = @(
 	@{Name="SponsorBlock for YouTube"; Id="4011816"; Url="https://addons.mozilla.org/en-US/firefox/addon/sponsorblock/"; UID="sponsorBlocker@ajay.app"},
 	@{Name="Stylus"; Id="3995806"; Url="https://addons.mozilla.org/en-US/firefox/addon/styl-us/"; UID="{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}"},
 	@{Name="Tab Session Manager"; Id="4002882"; Url="https://addons.mozilla.org/en-US/firefox/addon/tab-session-manager/"; UID="Tab-Session-Manager@sienori"},
-	#@{Name="Twitch Adblock"; Id="3996079"; Url="https://addons.mozilla.org/en-US/firefox/addon/twitch-adblock/"; UID="{c961a5ba-dc89-44e9-9e52-93318dd95378}"},
+	# Supposedly redundant with BTTV. @{Name="Twitch Adblock"; Id="3996079"; Url="https://addons.mozilla.org/en-US/firefox/addon/twitch-adblock/"; UID="{c961a5ba-dc89-44e9-9e52-93318dd95378}"},
 	@{Name="uBlock Origin"; Id="4003969"; Url="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"; UID="uBlock0@raymondhill.net"},
 	@{Name="Violentmonkey"; Id="4003302"; Url="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/"; UID="{aecec67f-0d10-4fa7-b7c7-609a2db280cf}"}
 )
@@ -178,7 +178,30 @@ if ($ff = Find-Firefox) {
 }
 
 ################################################################################################################################################################
-# Configure
+# User.js
+################################################################################################################################################################
+"Setting up user profile..."
+
+# Setup profile
+# http://kb.mozillazine.org/User.js_file
+& {
+	$Name = "dnlj"
+	$Path = Join-Path $Env:APPDATA "Mozilla\Firefox"
+	$ProfPath = (Join-Path $Path "Profiles\$Name")
+	$null = New-Item -Force -ItemType "directory" -Path $ProfPath
+	
+	# http://kb.mozillazine.org/Profiles.ini_file
+	$profString = "[General]`nStartWithLastProfile=1`n`n[Profile0]`nName=$Name`nIsRelative=1`nPath=Profiles/$Name`nDefault=1`n"
+	$profString | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $Path "profiles.ini")
+	'{"firstUse": 0,"created": 0}' | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $ProfPath "times.json")
+	
+	Copy-Item "firefox_user.js" -Destination (Join-Path $ProfPath "user.js")
+	#$UserJs | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $ProfPath "user.js")
+}
+
+
+################################################################################################################################################################
+# Task Cleanup
 ################################################################################################################################################################
 # We have to launch FireFox to get it to create its scheduled tasks
 if ($installed -and $ff) {
@@ -198,6 +221,8 @@ if ($installed -and $ff) {
 		Disable-TasksLike "\Mozilla\*"
 	}
 }
+
+# https://www.stigviewer.com/stig/mozilla_firefox/
 
 
 ################################################################################################################################################################
@@ -227,5 +252,3 @@ if ($installed -and $ff) {
 #if ($ff = Find-Firefox) {
 #	& $ff (Join-Path $PSScriptRoot "extensions.html")
 #}
-
-Stop-Transcript
