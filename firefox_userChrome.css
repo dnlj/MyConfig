@@ -4,32 +4,38 @@
 /*** BEGIN Firefox 89 (6/2/2021) (6/12/2021) ***/
 /* Disable animations (fullscreen, new tab, etc.) */
 * {
-  /* Apparently the reason this breaks things is due to having both an animation and transition. To totally disable animations you can do unset !important on animation and transition. */
-  /*animation-delay: none !important;*/
-  /*transition: none !important;*/
-  
-  /* Settings these to zero seems to break some things like tabs, address bar, and bookmark edit menu. Probably some callbacks that trigger on transition end or something. */
-  /*animation-delay: 0ms !important;
-  animation-duration: 0ms !important;
-  transition-duration: 0.01ms !important;*/
-  /*! transition: none !important; */
-  /*! transition-property: none !important; */
+	/* Apparently the reason this breaks things is due to having both an animation and transition. To totally disable animations you can do unset !important on animation and transition. */
+	/*animation-delay: none !important;*/
+	/*transition: none !important;*/
+
+	/* Settings these to zero seems to break some things like tabs, address bar, and bookmark edit menu. Probably some callbacks that trigger on transition end or something. */
+	/*animation-delay: 0ms !important;
+	animation-duration: 0ms !important;
+	transition-duration: 0.01ms !important;*/
+	/*! transition: none !important; */
+	/*! transition-property: none !important; */
 }
 
 #navigator-toolbox[fullscreenShouldAnimate] {
-  /*transition: none !important; /* Disable fullscreen animation. Not needed since we disable globally. */
+	/*transition: none !important; /* Disable fullscreen animation. Not needed since we disable globally. */
 }
 
 /* Overrides */
 :root {
-  /*--tab-min-height: 30px !important; /* Tab Height */
-  --toolbarbutton-border-radius: 0px !important; /* Rounded buttons */
-  --proton-tab-block-margin: 0px !important; /* Space under tabs */
-  --tab-border-radius: 0px !important; /* Rounded tabs */
-  --arrowpanel-border-radius: 0px !important;
-  --toolbar-bgcolor: #fff !important; /* Boost contrast of toolbar */
-  --arrowpanel-menuitem-padding: 4px 8px !important; /* Dense burger menu */
-  --arrowpanel-border-radius: 0px !important; /* Doesnt seem to actually work? */
+	/*--tab-min-height: 30px !important; /* Tab Height */
+	--toolbarbutton-border-radius: 0px !important;
+	/* Rounded buttons */
+	--proton-tab-block-margin: 0px !important;
+	/* Space under tabs */
+	--tab-border-radius: 0px !important;
+	/* Rounded tabs */
+	--arrowpanel-border-radius: 0px !important;
+	--toolbar-bgcolor: #fff !important;
+	/* Boost contrast of toolbar */
+	--arrowpanel-menuitem-padding: 4px 8px !important;
+	/* Dense burger menu */
+	--arrowpanel-border-radius: 0px !important;
+	/* Doesnt seem to actually work? */
 }
 
 /* Disable "Add xyz" search engine suggestions in right click menu */
@@ -37,147 +43,158 @@
 .menuseparator-add-engine,
 .context-menu-add-engine,
 .searchbar-engine-one-off-add-engine {
-  display: none !important;
+	display: none !important;
 }
 
 /* Fix download buttons having huge border around it that when clicked will EXECUTE the file instead of showing file location. Dangerous design. */
-#downloadsListBox > richlistitem {
-  padding: 0 !important;
-  height: 3em !important;
+#downloadsListBox>richlistitem {
+	padding: 0 !important;
+	height: 3em !important;
 }
 
 button.downloadButton {
-  height: 3em !important;
-  width: 3em !important;
+	height: 3em !important;
+	width: 3em !important;
 }
 
 /* Fix narrow tab buttons */
-#scrollbutton-down, #scrollbutton-up {
-  width: 38px !important;
+#scrollbutton-down,
+#scrollbutton-up {
+	width: 38px !important;
 }
 
 /* Ctrl-F outline */
 input.findbar-textbox {
-  outline-width: 1px !important;
-  border-radius: 0px !important;
+	outline-width: 1px !important;
+	border-radius: 0px !important;
 }
 
 /* Bookmark folder icon */
 .bookmark-item[container] {
-  list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='rgba(0,0,0,0.30)' d='M224 64l64 64h224v352h-512v-416z'%3E%3C/path%3E%3C/svg%3E") !important;
+	list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='rgba(0,0,0,0.30)' d='M224 64l64 64h224v352h-512v-416z'%3E%3C/path%3E%3C/svg%3E") !important;
 }
 
 /* I don't want all my menus to be circles */
-menupopup, arrowscrollbox {
-  border-radius: 0px !important;
+menupopup,
+arrowscrollbox {
+	border-radius: 0px !important;
 }
 
 /* Shrink outline around urlbar so it there is room for the actual url in it */
 #urlbar-background {
-  --focus-outline-width: 1px;
-  --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color) !important;
-  box-shadow: none !important;
+	--focus-outline-width: 1px;
+	--focus-outline: var(--focus-outline-width) solid var(--focus-outline-color) !important;
+	box-shadow: none !important;
 }
 
 /* Add space above tabs to drag window */
 .toolbar-items {
-  margin-top: 16px !important;
+	margin-top: 16px !important;
 }
 
 /* Tab style. Tabs are tabs not buttons. */
-tab > stack {
-  margin-top: 3px !important; /* Make space for shadow since we kill --proton-tab-block-margin */
+tab>stack {
+	margin-top: 3px !important;
+	/* Make space for shadow since we kill --proton-tab-block-margin */
 }
 
 .tab-background {
-  margin-block: 0 !important;;
+	margin-block: 0 !important;
+	;
 }
 
 .tab-background[selected=true] {
-  background: var(--toolbar-bgcolor) !important; /* Match tabs to the rest of the UI */
-  border-top: 1px solid var(--focus-outline-color) !important; /* Line at top of active tab */
+	background: var(--toolbar-bgcolor) !important;
+	/* Match tabs to the rest of the UI */
+	border-top: 1px solid var(--focus-outline-color) !important;
+	/* Line at top of active tab */
 }
 
 .tabbrowser-tab {
-  --tab-label-mask-size: 0em !important; /* Get rid of grey fade over text that eats half the tab */
+	--tab-label-mask-size: 0em !important;
+	/* Get rid of grey fade over text that eats half the tab */
 }
 
 /* Make current tab apparent during multiselect */
 .tab-background:not([selected=true])[multiselected=true] {
-  box-shadow: none !important;
+	box-shadow: none !important;
 }
 
 /* Background tab outline / border */
 .tab-background:not([selected=true]):not([multiselected=true]) {
-  background: rgba(0,0,0,0.05) !important;
-/*border: 1px solid var(--chrome-content-separator-color) !important;
-  border-bottom: none !important;*/
+	background: rgba(0, 0, 0, 0.05) !important;
+	/*border: 1px solid var(--chrome-content-separator-color) !important;
+	border-bottom: none !important;*/
 }
 
 /* Fix context menu nav item size. */
 #context-navigation {
-  max-width: 0px !important;
+	max-width: 0px !important;
 }
 
 #context-navigation menuitem {
-  margin: 0 !important;
-  padding: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
-/* ---Menu Bar height--- *//*
+/* ---Menu Bar height--- */
+/*
 #toolbar-menubar {
-  margin-top: 0px !important;
-  margin-bottom: 0px !important;
-  padding-top: 0px !important;
-  padding-bottom: 0px !important;
-  line-height: 22px !important;
-  max-height: 22px !important;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+	line-height: 22px !important;
+	max-height: 22px !important;
 }/**/
 
 /* Fixing toolbar buttons (close/min/max) due to shoretened Menu Bar height */
 #toolbar-menubar .titlebar-button {
-  padding-block: 0px !important;
+	padding-block: 0px !important;
 }
 
 /* Menu items height / padding */
 menupopup :-moz-any(menu, menuitem) {
-  margin-top: 0px !important;
-  margin-bottom: 0px !important;
-  padding-top: 2px !important;
-  padding-bottom: 2px !important;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+	padding-top: 2px !important;
+	padding-bottom: 2px !important;
 }
+
 /*** END Firefox 89 ***/
 
 /*** BEGIN Firefox 77 (June 2, 2020) Override URL bar enlargement ***/
-  /* Compute new position, width, and padding */
-  #urlbar[breakout][breakout-extend] {
-    top: 5px !important;
-    left: 0px !important;
-    width: 100% !important;
-    padding: 0px !important;
-  }
-  
-  /* for alternate Density settings */
-  [uidensity="compact"] #urlbar[breakout][breakout-extend] {
-    top: 3px !important;
-  }
-  [uidensity="touch"] #urlbar[breakout][breakout-extend] {
-    top: 4px !important;
-  }
+/* Compute new position, width, and padding */
+#urlbar[breakout][breakout-extend] {
+	top: 5px !important;
+	left: 0px !important;
+	width: 100% !important;
+	padding: 0px !important;
+}
 
-  /* Prevent shift of URL bar contents */
-  #urlbar[breakout][breakout-extend] > #urlbar-input-container {
-    height: var(--urlbar-height) !important;
-    padding: 0 !important;
-  }
+/* for alternate Density settings */
+[uidensity="compact"] #urlbar[breakout][breakout-extend] {
+	top: 3px !important;
+}
 
-  /* Do not animate */
-  #urlbar[breakout][breakout-extend] > #urlbar-background {
-    animation: none !important;;
-  }
+[uidensity="touch"] #urlbar[breakout][breakout-extend] {
+	top: 4px !important;
+}
 
-  /* Remove shadows */
-  #urlbar[breakout][breakout-extend] > #urlbar-background {
-    box-shadow: none !important;
-  }
+/* Prevent shift of URL bar contents */
+#urlbar[breakout][breakout-extend]>#urlbar-input-container {
+	height: var(--urlbar-height) !important;
+	padding: 0 !important;
+}
+
+/* Do not animate */
+#urlbar[breakout][breakout-extend]>#urlbar-background {
+	animation: none !important;
+}
+
+/* Remove shadows */
+#urlbar[breakout][breakout-extend]>#urlbar-background {
+	box-shadow: none !important;
+}
+
 /*** END Firefox 77 (June 2, 2020) Override URL bar enlargement ***/
