@@ -136,6 +136,16 @@ $programs = @(
 		Page="https://jdownloader.org/jdownloader2";
 		Down=""
 	},
+	@{ # Twitch Downloader CLI
+		Type="Tools";
+		Page="https://github.com/lay295/TwitchDownloader/releases";
+		Down="https://github.com/lay295/TwitchDownloader/releases/latest/download/TwitchDownloaderCLI-Linux-x64.zip"
+	},
+	@{ # YouTube DL
+		Type="Tools";
+		Page="https://github.com/ytdl-org/youtube-dl/releases";
+		Down="https://github.com/ytdl-org/youtube-dl/releases/latest/download/youtube-dl.exe"
+	},
 	@{ # Open Broadcaster Software
 		Type="Install";
 		Page="https://obsproject.com/download";

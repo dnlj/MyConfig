@@ -1,3 +1,8 @@
+# By default powershell only provides HKCU and HKLM
+if (!(Get-PSDrive | where Name -eq HKCR)) {
+	$null = New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+}
+
 function Download {
 	param (
 		[Parameter(Mandatory)][string] $Url,
@@ -60,6 +65,40 @@ function Disable-TasksLike {
 			$f | Stop-ScheduledTask
 			$null = $f | Disable-ScheduledTask
 		}
+	}
+}
+
+function Set-RegistryOwner {
+	param ([Parameter(Mandatory)] $Path)
+	
+	# Escalate current process's privilege
+	# https://stackoverflow.com/a/35843420
+	# https://learn.microsoft.com/en-us/windows/win32/secauthz/privilege-constants
+    # get SeTakeOwnership, SeBackup and SeRestore privileges before executes next lines, script needs Admin privilege
+    $import = '[DllImport("ntdll.dll")] public static extern int RtlAdjustPrivilege(ulong a, bool b, bool c, ref bool d);'
+    $ntdll = Add-Type -Member $import -Name NtDll -PassThru
+    $privileges = @{ SeTakeOwnership = 9; SeBackup =  17; SeRestore = 18 }
+    foreach ($i in $privileges.Values) {
+        $null = $ntdll::RtlAdjustPrivilege($i, 1, 0, [ref]0)
+    }
+	
+	# Really we should probably give ownership to system then add a rule for admins (thats how most of the registry is)
+	# https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers
+	# $system = [Security.Principal.SecurityIdentifier]("S-1-5-18")
+	$admins = [Security.Principal.SecurityIdentifier]("S-1-5-32-544")
+	$items = Get-ChildItem -Recurse -Path $Path
+	foreach ($item in $items) {
+		# Reopen key with the "TakeOwnership" flag.
+		$item = $item.OpenSubKey("", "ReadWriteSubTree", "TakeOwnership")
+		
+		# Take ownership.
+		$acl = New-Object Security.AccessControl.RegistrySecurity
+		$acl.SetOwner($admins)
+		$item.SetAccessControl($acl)
+		
+		# Now that we own the key we can change premissions.
+		$acl.SetAccessRuleProtection($false, $false)
+		$item.SetAccessControl($acl)
 	}
 }
 

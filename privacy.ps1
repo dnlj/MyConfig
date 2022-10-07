@@ -553,7 +553,6 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\DeliveryOpti
 # Disable automatic updates for non-windows things
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" -Name "AutoDownload" -Type DWord -Value 2
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -Type DWord -Value 2
-#Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ExcludeWUDriversInQualityUpdate" -Type DWord -Value 1
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Services\7971f918-a847-4430-9279-4a52d1efe18d" -Name "RegisteredWithAU" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" -Name "PreventDeviceMetadataFromNetwork" -Type DWord -Value 1
 
@@ -627,6 +626,9 @@ Set-Registry -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Win
 # Privacy
 ################################################################################################################################################################
 "Configuring privacy settings..."
+
+# Disable additional data being sent to Microsoft automatically
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" -Name "DontSendAdditionalData" -Type DWord -Value 1
 
 # Disable UserAssist (program tracking)
 Set-Registry -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackProgs" -Type DWord -Value 0
@@ -975,6 +977,56 @@ Set-Registry -Path "HKCU:\Control Panel\Accessibility" -Name "DynamicScrollbars"
 # Aero Peek
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\DWM" -Name "EnableAeroPeek" -Type DWord -Value 0
 
+################################################################################################################################################################
+# Context Menu
+################################################################################################################################################################
+Set-RegistryOwner -Path "HKCR:\Directory\Background\shell"
+
+# Command Prompt (Admin)
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a1_cmd" -Name "(Default)" -Type String -Value "Open cmd window here as admin"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a1_cmd" -Name "Icon" -Type String -Value "cmd.exe"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a1_cmd" -Name "Extended" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a1_cmd" -Name "HasLUAShield" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a1_cmd" -Name "SeparatorBefore" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a1_cmd\command" -Name "(Default)" -Type String -Value "powershell -NoLogo -Sta -NonInteractive -NoProfile -WindowStyle hidden -Command `"Start cmd.exe -Verb RunAs -ArgumentList '/s /k pushd %v'`""
+
+# PowerShell (Admin)
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "(Default)" -Type String -Value "Open PowerShell here as admin"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "Icon" -Type String -Value "powershell.exe"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "Extended" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "HasLUAShield" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell\command" -Name "(Default)" -Type String -Value "powershell -NoLogo -Sta -NonInteractive -NoProfile -Command `"Start powershell.exe -Verb RunAs -ArgumentList `"`"`"-NoExit -Command Set-Location -LiteralPath '%v'`"`"`""
+
+# Command Prompt
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b1_cmd" -Name "(Default)" -Type String -Value "Open cmd window here"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b1_cmd" -Name "Icon" -Type String -Value "cmd.exe"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b1_cmd" -Name "SeparatorBefore" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b1_cmd\command" -Name "(Default)" -Type String -Value "cmd.exe /s /k pushd `"%V`""
+
+# PowerShell
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b2_powershell" -Name "(Default)" -Type String -Value "Open PowerShell here"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b2_powershell" -Name "Icon" -Type String -Value "powershell.exe"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b2_powershell\command" -Name "(Default)" -Type String -Value "powershell.exe -NoExit -Command Set-Location -LiteralPath '%V'"
+
+# WSL
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "(Default)" -Type String -Value "Open WSL terminal here"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "Icon" -Type String -Value "wsl.exe"
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl\command" -Name "(Default)" -Type String -Value "wsl.exe --cd `"%v`""
+
+# Git Bash
+#Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b4_git_shell" -Name "(Default)" -Type String -Value "Open git bash here"
+#Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b4_git_shell" -Name "Icon" -Type String -Value "`"C:\\Program Files\\Git\\mingw64\\share\\git\\git-for-windows.ico`""
+#Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b4_git_shell" -Name "SeparatorAfter" -Type String -Value ""
+#Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b4_git_shell\command" -Name "(Default)" -Type String -Value "`"C:\\Program Files\\Git\\git-bash.exe`" `"--cd=%v.`""
+
+# Remove unwanted items
+Set-Registry -Path "HKCR:\Directory\Background\shell\cmd" -Name "LegacyDisable" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\Powershell" -Name "LegacyDisable" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\WSL" -Name "LegacyDisable" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\git_shell" -Name "LegacyDisable" -Type String -Value ""
+Set-Registry -Path "HKCR:\Directory\Background\shell\AnyCode" -Name "LegacyDisable" -Type String -Value ""
+Set-Registry -Path "HKCR:\Python.File\shell\Edit with IDLE" -Name "LegacyDisable" -Type String -Value ""
+Set-Registry -Path "HKCR:\Python.File\shell\editwithidle" -Name "LegacyDisable" -Type String -Value ""
 
 ################################################################################################################################################################
 # Power Settings
@@ -1002,25 +1054,7 @@ Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power
 
 # Respect power mode settings while indexing
 # Cant be set through powershell for some reason. Get a System.Security.SecurityException
-# 
-# If we really care we can mess up access rules with something like:
-#   @{
-#       $Path = "HKLM:\SOFTWARE\Microsoft\Windows Search\Gather"
-#       $Rule = New-Object -TypeName System.Security.AccessControl.RegistryAccessRule -ArgumentList ("BUILTIN\Administrators", "FullControl", 1, 2, "Allow")
-#       $Acl = Get-Acl -Path $Path
-#       # Not sure what all we have to change to get this working
-#       # I think we need to take ownership and nuke inheritance (Like right click > perm > adv > take ownership > both checkboxes)
-#       # At least thats what we have to do through regedit to get it to work
-#       #
-#       # https://learn.microsoft.com/en-us/dotnet/api/system.security.accesscontrol.registryaccessrule
-#       # https://learn.microsoft.com/en-us/dotnet/api/system.security.accesscontrol.registrysecurity
-#       # https://www.ipswitch.com/blog/how-to-change-registry-permissions-with-powershell
-#       # .SetOwner? .SetAccessRuleProtection? Audit rules? See: `$Acl | Get-Member`
-#       $Acl.AddAccessRule($Rule)
-#       $Acl | Set-Acl -Path $Path
-#   }
-#
-# But i cant be bothered to get this working right now.
+# Probably just need to do a Set-RegistryOwner on the relevant key.
 #
 #Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows Search\Gather\Windows\SystemIndex" -Name "RespectPowerModes" -Type DWord -Value 1
 
