@@ -943,6 +943,9 @@ Set-Registry -Path "HKCU:\Control Panel\Desktop" -Name "LockScreenAutoLockActive
 Set-Registry -Path "HKCU:\Control Panel\Desktop" -Name "UserPreferencesMask" -Type Binary -Value ([byte[]](0x90,0x1E,0x07,0x80,0x10,0x00,0x00,0x00))
 Set-Registry -Path "HKCU:\Control Panel\Desktop" -Name "MenuShowDelay" -Type String -Value "0"
 
+# Disable Transparency
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "EnableTransparency" -Type DWord -Value 0
+
 # Animate when min/max
 Set-Registry -Path "HKCU:\Control Panel\Desktop\WindowMetrics" -Name "MinAnimate" -Type String -Value "1"
 
@@ -977,9 +980,11 @@ Set-Registry -Path "HKCU:\Control Panel\Accessibility" -Name "DynamicScrollbars"
 # Aero Peek
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\DWM" -Name "EnableAeroPeek" -Type DWord -Value 0
 
+
 ################################################################################################################################################################
 # Context Menu
 ################################################################################################################################################################
+"Configuring context menu shortcuts..."
 Set-RegistryOwner -Path "HKCR:\Directory\Background\shell"
 
 # Command Prompt (Admin)
@@ -1027,6 +1032,7 @@ Set-Registry -Path "HKCR:\Directory\Background\shell\git_shell" -Name "LegacyDis
 Set-Registry -Path "HKCR:\Directory\Background\shell\AnyCode" -Name "LegacyDisable" -Type String -Value ""
 Set-Registry -Path "HKCR:\Python.File\shell\Edit with IDLE" -Name "LegacyDisable" -Type String -Value ""
 Set-Registry -Path "HKCR:\Python.File\shell\editwithidle" -Name "LegacyDisable" -Type String -Value ""
+
 
 ################################################################################################################################################################
 # Power Settings

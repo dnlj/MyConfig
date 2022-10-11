@@ -93,6 +93,7 @@ user_pref("app.shield.optoutstudies.enabled", false);
 user_pref("experiments.enabled", false);
 user_pref("experiments.supported", false);
 user_pref("app.normandy.api_url", "");
+user_pref("app.normandy.user_id", "");
 user_pref("messaging-system.rsexperimentloader.enabled", false);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

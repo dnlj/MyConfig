@@ -73,19 +73,9 @@ $programs = @(
 	#	Page="https://www.amd.com/en/support";
 	#	Down=""
 	#},
-	@{ # Intel xyz
+	@{ # Focusrite Scarlett 2i2
 		Type="Driver";
-		Page="";
-		Down=""
-	},
-	@{ # Intel xyz
-		Type="Driver";
-		Page="";
-		Down=""
-	},
-	@{ # Intel xyz
-		Type="Driver";
-		Page="";
+		Page="https://downloads.focusrite.com/focusrite/scarlett-2nd-gen/scarlett-2i2-2nd-gen";
 		Down=""
 	},
 ################################################################################
@@ -126,10 +116,10 @@ $programs = @(
 		Page="https://www.foxit.com/downloads#Foxit-Reader";
 		Down="https://www.foxit.com/downloads/latest.html?product=Foxit-Reader&platform=Windows&version=&package_type=&language=English"
 	},
-	@{ # Image Glass
+	@{ # Mouse without Borders 
 		Type="Install";
-		Page="https://imageglass.org/download";
-		Down=""
+		Page="https://www.microsoft.com/en-us/download/details.aspx?id=35460";
+		Down="https://download.microsoft.com/download/6/5/8/658AFC4C-DC02-4CB8-839D-10253E89FFF7/MouseWithoutBordersSetup.msi"
 	},
 	@{ # JDownloader 2
 		Type="Install";
@@ -166,20 +156,18 @@ $programs = @(
 		Page="https://vb-audio.com/Cable/index.htm";
 		Down=""
 	},
+	@{ # DesktopOK
+		Type="Install";
+		Page="https://www.softwareok.com/?Download=DesktopOK";
+		Down="https://www.softwareok.com/Download/DesktopOK_Installer_x64.zip"
+	},
+################################################################################
+# Performance / Benchmarking / Monitoring
+################################################################################
 	@{ # HWInfo
 		Type="Tools";
 		Page="https://www.hwinfo.com/download/";
 		Down=""
-	},
-	@{ # Process Explorer
-		Type="Tools";
-		Page="https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer";
-		Down="https://download.sysinternals.com/files/ProcessExplorer.zip"
-	},
-	@{ # Process Monitor
-		Type="Tools";
-		Page="https://learn.microsoft.com/en-us/sysinternals/downloads/procmon";
-		Down="https://download.sysinternals.com/files/ProcessMonitor.zip"
 	},
 	@{ # CPU-Z
 		Type="Tools";
@@ -197,7 +185,7 @@ $programs = @(
 		Down="" # Redirects to latest, but its an html page with a redirect in it. So we cant follow: https://crystalmark.info/redirect.php?product=CrystalDiskInfo
 	},
 ################################################################################
-# Dev Tools
+# Dev Tools 
 ################################################################################
 	@{ # Visual Studio
 		Type="Install";
@@ -213,6 +201,26 @@ $programs = @(
 		Type="Install";
 		Page="https://notepad-plus-plus.org/downloads/";
 		Down=""
+	},
+	@{ # Process Explorer
+		Type="Tools";
+		Page="https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer";
+		Down="https://download.sysinternals.com/files/ProcessExplorer.zip"
+	},
+	@{ # Process Monitor
+		Type="Tools";
+		Page="https://learn.microsoft.com/en-us/sysinternals/downloads/procmon";
+		Down="https://download.sysinternals.com/files/ProcessMonitor.zip"
+	},
+	@{ # Wireshark
+		Type="Install";
+		Page="https://www.wireshark.org/download.html";
+		Down="https://www.wireshark.org/download/win64/Wireshark-win64-latest.exe"
+	},
+	@{ # SQLite Browser
+		Type="Tools";
+		Page="https://sqlitebrowser.org/dl/";
+		Down="https://nightlies.sqlitebrowser.org/latest/DB.Browser.for.SQLite-win64.zip"
 	},
 	@{ # Python
 		Type="Install";
