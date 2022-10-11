@@ -571,36 +571,98 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Sys
 
 # Chromium
 # Can also be configured under HKCU if you want.
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "StartupBoostEnabled" -Type DWord -Value 0
+# See: `edge://policy/` > "Show policies with no value"
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "DefaultSearchProviderEnabled" -Type DWord -Value 1
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "DefaultSearchProviderName" -Type String -Value "Google"
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "DefaultSearchProviderSearchURL" -Type String -Value "{google:baseURL}search?q=%s&{google:originalQueryForSuggestion}{google:assistedQueryStats}{google:searchboxStats}{google:searchFieldtrialParameter}{google:iOSSearchLanguage}{google:prefetchSource}{google:searchClient}{google:sourceId}{google:contextualSearchVersion}ie={inputEncoding}"
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "DefaultSearchProviderSuggestURL" -Type String -Value "{google:baseURL}complete/search?output=chrome&q={searchTerms}"
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "HomepageLocation" -Type String -Value "https://www.google.com/" # Can also use `about:blank`
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "NewTabPageLocation" -Type String -Value "https://www.google.com/" # Can also use `about:blank`
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AddressBarMicrosoftSearchInBingProviderEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AlternateErrorPagesEnabled" -Type DWord -Value 0 # Suggest similar sites
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ApplicationGuardTrafficIdentificationEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillAddressEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillAddressEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillCreditCardEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillCreditCardEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "AutofillCreditCardEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "BackgroundModeEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "BrowserSignin" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ConfigureDoNotTrack" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ConfigureOnlineTextToSpeech" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ConfigureShare" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "DefaultBrowserSettingEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "DiagnosticData" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "EdgeDiscoverEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "EdgeEDropEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "EdgeEnhanceImagesEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "EdgeFollowEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "EdgeShoppingAssistantEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "EnableMediaRouter" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "FamilySafetySettingsEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "GuidedSwitchEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "HideInternetExplorerRedirectUXForIncompatibleSitesEnabled" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "HideRestoreDialogEnabled" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "HubsSidebarEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImplicitSignInEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportAutofillFormData" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportBrowserSettings" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportCookies" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportExtensions" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportFavorites" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportHistory" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportHomepage" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportOnEachLaunch" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportOpenTabs" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportPaymentInfo" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportSavedPasswords" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportSearchEngine" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportShortcuts" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ImportStartupPageSettings" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "InAppSupportEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "InternetExplorerIntegrationLevel" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "LinkedAccountEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "LiveCaptionsAllowed" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "LocalProvidersEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "MAMEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "MathSolverEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "MediaRouterCastAllowAllIPs" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "MicrosoftEdgeInsiderPromotionEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "MicrosoftOfficeMenuEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "NetworkPredictionOptions" -Type DWord -Value 2
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "OutlookHubMenuEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "PasswordManagerEnabled" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "PaymentMethodQueryEnabled" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "PersonalizationReportingEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AddressBarMicrosoftSearchInBingProviderEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "UserFeedbackAllowed" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillCreditCardEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillAddressEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "LocalProvidersEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "SearchSuggestEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "EdgeShoppingAssistantEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "WebWidgetAllowed" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ResolveNavigationErrorsUseWebService" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AlternateErrorPagesEnabled" -Type DWord -Value 0 # Suggest similar sites
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "NetworkPredictionOptions" -Type DWord -Value 2
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "WebWidgetIsEnabledOnStartup" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "SyncDisabled" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ShowMicrosoftRewards" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "MediaRouterCastAllowAllIPs" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ConfigureOnlineTextToSpeech" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "SpeechRecognitionEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ConfigureShare" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillAddressEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "AutofillCreditCardEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "HideInternetExplorerRedirectUXForIncompatibleSitesEnabled" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "PromotionalTabsEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "PromptForDownloadLocation" -Type DWord -Value 1
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "RedirectSitesFromInternetExplorerRedirectMode" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "DefaultBrowserSettingEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "RelatedMatchesCloudServiceEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ResolveNavigationErrorsUseWebService" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "RoamingProfileSupportEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "SearchSuggestEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "SendIntranetToInternetExplorer" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "SharedLinksEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ShowCastIconInToolbar" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ShowHomeButton" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "ShowMicrosoftRewards" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ShowOfficeShortcutInFavoritesBar" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ShowPDFDefaultRecommendationsEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "ShowRecommendationsEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "SignInCtaOnNtpEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "SiteSafetyServicesEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "SpeechRecognitionEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "StartupBoostEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "SyncDisabled" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "SyncTypesListDisabled" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "TyposquattingCheckerEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "UserFeedbackAllowed" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "UserFeedbackAllowed" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "AutofillCreditCardEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "WebWidgetAllowed" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Edge" -Name "WebWidgetIsEnabledOnStartup" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "WindowsHelloForHTTPAuthEnabled" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "DisableEdgeDesktopShortcutCreation" -Type DWord -Value 1
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "ExtensionSettings" -Type String -Value '{"*":{},"odfafepnkmbhccpbejgmiehpchacaeak":{"toolbar_state":"default_shown","installation_mode":"normal_installed","update_url":"https://edge.microsoft.com/extensionwebstorebase/v1/crx"},"lmijmgnfconjockjeepmlmkkibfgjmla":{"toolbar_state":"default_shown","installation_mode":"normal_installed","update_url":"https://edge.microsoft.com/extensionwebstorebase/v1/crx"},"mdkdmaickkfdekbjdoojfalpbkgaddei":{"toolbar_state":"default_shown","installation_mode":"normal_installed","update_url":"https://edge.microsoft.com/extensionwebstorebase/v1/crx"}}'
 
 # SmartScreen (Chromium)
 Set-Registry -Path "HKCU:\Software\Policies\Microsoft\Edge" -Name "SmartScreenEnabled" -Type DWord -Value 0
@@ -1000,7 +1062,7 @@ Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "
 Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "Icon" -Type String -Value "powershell.exe"
 Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "Extended" -Type String -Value ""
 Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell" -Name "HasLUAShield" -Type String -Value ""
-Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell\command" -Name "(Default)" -Type String -Value "powershell -NoLogo -Sta -NonInteractive -NoProfile -Command `"Start powershell.exe -Verb RunAs -ArgumentList `"`"`"-NoExit -Command Set-Location -LiteralPath '%v'`"`"`""
+Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_a2_powershell\command" -Name "(Default)" -Type String -Value "powershell -NoLogo -Sta -NonInteractive -NoProfile -Command `"Start powershell.exe -Verb RunAs -ArgumentList `"`"`"-NoExit -Command Set-Location -LiteralPath '%v'`"`"`"`""
 
 # Command Prompt
 Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b1_cmd" -Name "(Default)" -Type String -Value "Open cmd window here"
