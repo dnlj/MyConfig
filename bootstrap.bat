@@ -1,0 +1,2 @@
+PowerShell -NoProfile -NoLogo -NonInteractive -ExecutionPolicy Bypass -Command "Start-Process PowerShell -ArgumentList 'Set-ExecutionPolicy Unrestricted -Force' -Verb RunAs"
+PowerShell -NoProfile -NoLogo -NonInteractive -Command "Start-Process PowerShell -Verb RunAs -ArgumentList """-NoExit -Command Set-Location -LiteralPath '%cd%'""""
