@@ -165,6 +165,7 @@ $ServicesDisables_Microsoft = @(
 	# Gaming
 	# Disabling some of these may break XInput and/or Windows.Gaming.Input
 	"BcastDVR*",
+	"GamingService*", # "GamingServices" and "GamingServicesNet"
 	"CaptureService*",
 	"XblAuthManager*", # Xbox Live Auth Manager
 	"XblGameSave*", # Xbox Live Game Save
@@ -453,9 +454,6 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "Don
 # Disable camera on lock screen
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization" -Name "NoLockScreenCamera" -Type DWord -Value 1
 
-# Lock Screen notifications
-Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_TOASTS_ABOVE_LOCK" -Type DWord -Value 0
-
 # Disable wifi sense
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "AutoConnectAllowedOEM" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" -Name "Value" -Type DWord -Value 0
@@ -476,7 +474,8 @@ Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Peernet" -Name "Disabled" 
 
 # Windows Updates
 #
-# WARNING: Windows Defender uses Windows Update. Disabling this will prevent Window Defender for receiving updates.
+# WARNING: Windows Defender uses Windows Update. Disabling this will prevent Window Defender from receiving updates.
+# See update task below.
 #
 # NoAutoUpdate: 0=enabled, 1=disabled
 # AUOptions:
@@ -493,6 +492,10 @@ Set-Registry -Path "HKLM:\System\CurrentControlSet\Services\wuauserv" -Name "Sta
 # Create a task to update Windows Defender even if updates are turned off
 # https://www.microsoft.com/en-us/wdsi/defenderupdates
 # Times use ISO 8601 durations: https://en.wikipedia.org/wiki/ISO_8601#Durations
+# 
+# Some reason Windows Update still thinks there are updates some times.
+# If you check all the version numbers with `MpCmdRun -SignatureUpdate` you will
+# see that we are actually up to date.
 &{
 	try {
 		$ErrorActionPreference = "Stop"
@@ -888,8 +891,11 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name
 Set-Registry -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
 
-# Suggestion notifications
+# Notifications
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.Suggested" -Name "Enabled" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_TOASTS_ABOVE_LOCK" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_CRITICAL_TOASTS_ABOVE_LOCK" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_NOTIFICATION_SOUND" -Type DWord -Value 0
 
 
 ################################################################################################################################################################
