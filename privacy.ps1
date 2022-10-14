@@ -77,7 +77,7 @@ Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudSto
 ################################################################################################################################################################
 "Configuring services..."
 # Always include a trailing "*" to account for per-user services
-$ServicesDisables_Microsoft = @(
+$ServicesDisables = @(
 	# General / Unsorted
 	"DoSvc*", # Delivery Optimization
 	"edgeupdate*", # Edge update services
@@ -170,9 +170,15 @@ $ServicesDisables_Microsoft = @(
 	"XblAuthManager*", # Xbox Live Auth Manager
 	"XblGameSave*", # Xbox Live Game Save
 	"XboxGipSvc*", # Xbox Accessory Management Service
-	"XboxNetApiSvc" # Xbox Live Networking Service
+	"XboxNetApiSvc", # Xbox Live Networking Service
 	#"xboxgip*",
 	#"xinputhid*",
+	
+	# Foxit
+	"Foxit*",
+	
+	# Logitech GHub
+	"LGHUB*"
 )
 
 # We manually iterate the registry instead of using `Get-Service` here because
@@ -182,7 +188,7 @@ $ServicesDisables_Microsoft = @(
 # https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows
 #
 $ServicesList = Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Services"
-foreach ($rule in $ServicesDisables_Microsoft) {
+foreach ($rule in $ServicesDisables) {
 	$found = $ServicesList | Where PSChildName -Like $rule
 
 	foreach ($f in $found) {
@@ -349,31 +355,36 @@ foreach ($rule in $FirewallDisables) {
 
 # Set as though changed through Windows settings UI
 $AppPerm_UserChoice = @(
-	"userAccountInformation",
-	"appDiagnostics",
-	"location",
-	"webcam",
-	"microphone",
 	"activity",
-	"contacts",
+	"appDiagnostics",
 	"appointments",
-	"phoneCall",
-	"phoneCallHistory",
-	"email",
-	"userDataTasks",
-	"chat",
-	"radios",
+	"bluetooth",
 	"bluetoothSync",
-	"videosLibrary",
-	"picturesLibrary",
-	"documentsLibrary",
 	"broadFileSystemAccess",
 	"cellularData",
+	"chat",
+	"contacts",
+	"documentsLibrary",
+	"downloadsFolder",
+	"email",
 	"gazeInput",
 	"graphicsCaptureProgrammatic",
 	"graphicsCaptureWithoutBorder",
+	"humanInterfaceDevice",
+	"location",
+	"microphone",
 	"musicLibrary",
-	"downloadsFolder"
+	"phoneCall",
+	"phoneCallHistory",
+	"picturesLibrary",
+	"radios",
+	"userAccountInformation",
+	"userDataTasks",
+	"userNotificationListener",
+	"videosLibrary",
+	"webcam",
+	"wifiData",
+	"wifiDirect"
 )
 
 foreach ($perm in $AppPerm_UserChoice) {
@@ -692,6 +703,9 @@ Set-Registry -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Win
 ################################################################################################################################################################
 "Configuring privacy settings..."
 
+# .NET Telemetry
+[System.Environment]::SetEnvironmentVariable('DOTNET_CLI_TELEMETRY_OPTOUT', '1', [System.EnvironmentVariableTarget]::Machine)
+
 # Disable additional data being sent to Microsoft automatically
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" -Name "DontSendAdditionalData" -Type DWord -Value 1
 
@@ -923,6 +937,35 @@ Get-LocalUser | %{$_.SID.ToString()} | %{Set-Registry -Path "HKLM:\SOFTWARE\Micr
 
 
 ################################################################################################################################################################
+# Power Settings
+################################################################################################################################################################
+# Disable hibernate
+Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabledDefault" -Type DWord -Value 0
+
+# Fast Boot
+Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name "HiberbootEnabled" -Type DWord -Value 0
+
+# TODO: configure power settings
+#
+# Set active scheme
+# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\ActivePowerScheme 
+#
+# Some info under powercfg: https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options
+# See: powercfg /query
+#
+# We can just create our own scheme instead of modifying existing one
+#
+# Configure a setting in a scheme (i assume AC = on wall, DC = on battery)
+# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\{scheme}\{setting}\ACSettingIndex
+# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\{scheme}\{setting}\DCSettingIndex
+
+# Respect power mode settings while indexing
+Set-RegistryOwner -Path "HKLM:\SOFTWARE\Microsoft\Windows Search"
+Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows Search\Gather\Windows\SystemIndex" -Name "RespectPowerModes" -Type DWord -Value 1
+
+
+################################################################################################################################################################
 # Preferences
 ################################################################################################################################################################
 "Configuring preferences..."
@@ -1101,36 +1144,6 @@ Set-Registry -Path "HKCR:\Directory\Background\shell\AnyCode" -Name "LegacyDisab
 Set-Registry -Path "HKCR:\Python.File\shell\Edit with IDLE" -Name "LegacyDisable" -Type String -Value ""
 Set-Registry -Path "HKCR:\Python.File\shell\editwithidle" -Name "LegacyDisable" -Type String -Value ""
 
-
-################################################################################################################################################################
-# Power Settings
-################################################################################################################################################################
-# Disable hibernate
-Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabledDefault" -Type DWord -Value 0
-
-# Fast Boot
-Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name "HiberbootEnabled" -Type DWord -Value 0
-
-# TODO: configure power settings
-#
-# Set active scheme
-# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\ActivePowerScheme 
-#
-# Some info under powercfg: https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options
-# See: powercfg /query
-#
-# We can just create our own scheme instead of modifying existing one
-#
-# Configure a setting in a scheme (i assume AC = on wall, DC = on battery)
-# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\{scheme}\{setting}\ACSettingIndex
-# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\{scheme}\{setting}\DCSettingIndex
-
-# Respect power mode settings while indexing
-# Cant be set through powershell for some reason. Get a System.Security.SecurityException
-# Probably just need to do a Set-RegistryOwner on the relevant key.
-#
-#Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows Search\Gather\Windows\SystemIndex" -Name "RespectPowerModes" -Type DWord -Value 1
 
 ################################################################################################################################################################
 # Keyboard Setting
