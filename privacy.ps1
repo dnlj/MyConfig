@@ -1,5 +1,16 @@
 #Requires -RunAsAdministrator
+
+param (
+	[Parameter(Mandatory)]
+	[ValidateSet("Safe", "Normal", "Aggressive")]
+	[string]$Mode
+)
+
 . .\helpers.ps1
+
+Set-Variable -Option Constant -Name "ModeAggr" -Value ($Mode -eq "Aggressive")
+Set-Variable -Option Constant -Name "ModeNorm" -Value ($ModeAggr -or ($Mode -eq "Normal"))
+Set-Variable -Option Constant -Name "ModeSafe" -Value ($ModeNorm -or ($Mode -eq "Safe"))
 
 try { $null = Stop-Transcript } catch {}
 Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.settings.$(Get-Date -F yyyyMMddTHHmmssffff).log"
@@ -79,106 +90,106 @@ Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudSto
 # Always include a trailing "*" to account for per-user services
 $ServicesDisables = @(
 	# General / Unsorted
-	"DoSvc*", # Delivery Optimization
-	"edgeupdate*", # Edge update services
-	"MicrosoftEdgeElevationService*",
-	"icssvc*", # Windows Mobile Hotspot Service
-	"InstallService*", # Microsoft Store Install Service
-	"InventorySvc*", # Inventory and Compatibility Appraisal service
-	#"P9RdrService*" # Plan 9 File Server - Part of WSL
-	"MapsBroker*", # Downloaded Maps Manager
-	"PimIndexMaintenanceSvc*", # Contact Data indexing
-	"RetailDemo*", # Retail Demo Service
-	"WbioSrvc*", # Windows Biometric Service
-	"WMPNetworkSvc*", # Windows Media Player Network Sharing Service
-	"workfolderssvc*", # Work Folders
-	"OneSyncSvc*", # Various syncing functionality
-	"UnistoreSvc*", # User Data Storage
-	"UserDataSvc*", # User Data Access
-	"DevicesFlowUserSvc*",
-	"DevicePickerUserSvc*",
-	"DeviceAssociationBrokerSvc*",
-	"NPSMSvc*", # Now playing session manager
-	"AppReadiness", # App Readiness - Windows Store app install and setup
-	"cbdhsvc*", # Clipboard service - for enhanceed clipboard: history, device sharing, etc.
-	# ! DONT DISABLE ! "TextInputManagementService*", # DONT DISABLE: breaks keyboard input.
-	
+	($ModeSafe, "DoSvc*"), # Delivery Optimization
+	($ModeSafe, "edgeupdate*"), # Edge update services
+	($ModeSafe, "MicrosoftEdgeElevationService*"),
+	($ModeSafe, "icssvc*"), # Windows Mobile Hotspot Service
+	($ModeAggr, "InstallService*"), # Microsoft Store Install Service
+	($ModeAggr, "InventorySvc*"), # Inventory and Compatibility Appraisal service
+	#($ModeAggr, "P9RdrService*"), # Plan 9 File Server - Part of WSL
+	($ModeSafe, "MapsBroker*"), # Downloaded Maps Manager
+	($ModeSafe, "PimIndexMaintenanceSvc*"), # Contact Data indexing
+	($ModeSafe, "RetailDemo*"), # Retail Demo Service
+	($ModeSafe, "WbioSrvc*"), # Windows Biometric Service
+	($ModeSafe, "WMPNetworkSvc*"), # Windows Media Player Network Sharing Service
+	($ModeSafe, "workfolderssvc*"), # Work Folders
+	($ModeSafe, "OneSyncSvc*"), # Various syncing functionality
+	($ModeAggr, "UnistoreSvc*"), # User Data Storage
+	($ModeAggr, "UserDataSvc*"), # User Data Access
+	($ModeAggr, "DevicesFlowUserSvc*"),
+	($ModeAggr, "DevicePickerUserSvc*"),
+	($ModeAggr, "DeviceAssociationBrokerSvc*"),
+	($ModeSafe, "NPSMSvc*"), # Now playing session manager
+	($ModeSafe, "AppReadiness"), # App Readiness - Windows Store app install and setup
+	($ModeAggr, "cbdhsvc*"), # Clipboard service - for enhanceed clipboard: history, device sharing, etc.
+	 # ! DONT DISABLE ! ($ModeAggr,"TextInputManagementService*"), # DONT DISABLE: breaks keyboard input.
+
 	# Privacy, Tracking, and Telemetry
-	"SSDPSRV", # SSDP Discovery - Simple Search and Discovery Protocol
-	"lfsvc", # Geolocation Service
-	"AJRouter*", # AllJoyn Router Service - IoT stuff - https://en.wikipedia.org/wiki/AllJoyn
-	"HomeGroup*", # Multiple homegroup related services
-	"SharedAccess*", # Internet Connection Sharing (ICS)
-	"diagnosticshub.standardcollector.service*", # Microsoft (R) Diagnostics Hub Standard Collector Service
-	"diagsvc", # Diagnostic Execution Service
-	"DiagTrack", # Connected User Experiences and Telemetry 
-	"lltdsvc", # Link-Layer Topology Discovery Mapper   
-	"NetTcpPortSharing", # Net.Tcp Port Sharing Service
+	($ModeSafe, "SSDPSRV"), # SSDP Discovery - Simple Search and Discovery Protocol
+	($ModeSafe, "lfsvc"), # Geolocation Service
+	($ModeSafe, "AJRouter*"), # AllJoyn Router Service - IoT stuff - https://en.wikipedia.org/wiki/AllJoyn
+	($ModeSafe, "HomeGroup*"), # Multiple homegroup related services
+	($ModeSafe, "SharedAccess*"), # Internet Connection Sharing (ICS)
+	($ModeSafe, "diagnosticshub.standardcollector.service*"), # Microsoft (R) Diagnostics Hub Standard Collector Service
+	($ModeSafe, "diagsvc"), # Diagnostic Execution Service
+	($ModeSafe, "DiagTrack"), # Connected User Experiences and Telemetry
+	($ModeSafe, "lltdsvc"), # Link-Layer Topology Discovery Mapper
+	($ModeSafe, "NetTcpPortSharing"), # Net.Tcp Port Sharing Service
 
 	# Phone and Printers
-	"PhoneSvc*", # Phone Service
-	"TapiSrv*", # Telephony
-	"MessagingService*", # Text messaging and related functionality
-	"SmsRouter", # Microsoft Windows SMS Router Service
+	($ModeNorm, "PhoneSvc*"), # Phone Service
+	($ModeNorm, "TapiSrv*"), # Telephony
+	($ModeNorm, "MessagingService*"), # Text messaging and related functionality
+	($ModeNorm, "SmsRouter"), # Microsoft Windows SMS Router Service
 
 	# Mixed Reality
-	"*MixedReality*", # Windows Mixed Reality OpenXR Service
-	"SharedRealitySvc*", # Spatial Data Service
+	($ModeSafe, "*MixedReality*"), # Windows Mixed Reality OpenXR Service
+	($ModeSafe, "SharedRealitySvc*"), # Spatial Data Service
 
 	# Peer to peer
-	"p2pimsvc*", # Peer Networking Identity Manager
-	"p2psvc*", # Peer Networking Grouping
-	"PeerDistSvc*", # BranchCache
-	"PNRPAutoReg*", # PNRP Machine Name Publication Service
-	"PNRPsvc*", # Peer Name Resolution Protocol
+	($ModeSafe, "p2pimsvc*"), # Peer Networking Identity Manager
+	($ModeSafe, "p2psvc*"), # Peer Networking Grouping
+	($ModeSafe, "PeerDistSvc*"), # BranchCache
+	($ModeSafe, "PNRPAutoReg*"), # PNRP Machine Name Publication Service
+	($ModeSafe, "PNRPsvc*"), # Peer Name Resolution Protocol
 
 	# Remote Access, Desktop, and Management
-	"EntAppSvc*", # Enterprise App Management Service
-	"PushToInstall*", # Windows PushToInstall Service - remote app installation
-	"RasAuto*", # Remote Access Auto Connection Manager
-	"RasMan*", # Remote Access Connection Manager
-	"RemoteAccess*", # Routing and Remote Access
-	"RemoteRegistry*", # Remote Registry
-	"SessionEnv*", # Remote Desktop Configuration
-	"TermService*", # Remote Desktop Services
-	"UmRdpService*", # Remote Desktop Services UserMode Port Redirector
-	# ! DONT DISABLE ! "Winmgmt*", # Windows Management Instrumentation - DONT DISABLE: Breaks updates, add/remove capabilities, some powershell commands.
-	"WinRM*", # Windows Remote Management (WS-Management)
-	"DmEnrollmentSvc*", # Device Management Enrollment Service
-	"dmwappushservice*", # Device Management Wireless Application Protocol (WAP) Push message Routing Service dmwappushservice
-	"LanmanWorkstation*", # Network file sharing, SMB protocol
+	($ModeSafe, "EntAppSvc*"), # Enterprise App Management Service
+	($ModeSafe, "PushToInstall*"), # Windows PushToInstall Service - remote app installation
+	($ModeSafe, "RasAuto*"), # Remote Access Auto Connection Manager
+	($ModeSafe, "RasMan*"), # Remote Access Connection Manager
+	($ModeSafe, "RemoteAccess*"), # Routing and Remote Access
+	($ModeSafe, "RemoteRegistry*"), # Remote Registry
+	($ModeSafe, "SessionEnv*"), # Remote Desktop Configuration
+	($ModeSafe, "TermService*"), # Remote Desktop Services
+	($ModeSafe, "UmRdpService*"), # Remote Desktop Services UserMode Port Redirector
+	# ! DONT DISABLE ! ($ModeAggr, "Winmgmt*"), # Windows Management Instrumentation - DONT DISABLE: Breaks updates, add/remove capabilities, some powershell commands.
+	($ModeSafe, "WinRM*"), # Windows Remote Management (WS-Management)
+	($ModeSafe, "DmEnrollmentSvc*"), # Device Management Enrollment Service
+	($ModeSafe, "dmwappushservice*"), # Device Management Wireless Application Protocol (WAP) Push message Routing Service dmwappushservice
+	($ModeSafe, "LanmanWorkstation*"), # Network file sharing, SMB protocol
 
 	# Printers
-	"PrintNotify*", # Printer Extensions and Notifications
-	"PrintWorkflowUserSvc*",
-	# "Spooler*", # Print Spooler
+	($ModeAggr, "PrintNotify*"), # Printer Extensions and Notifications
+	($ModeAggr, "PrintWorkflowUserSvc*"),
+	#($ModeAggr, "Spooler*"), # Print Spooler
 
 	# Authorization, Payment, and Sharing
-	"SCardSvr*", # Smart Card
-	"ScDeviceEnum*", # Smart Card Device Enumeration Service
-	"SCPolicySvc*", # Smart Card Removal Policy
-	"SEMgrSvc*", # Payments and NFC/SE Manager
-	"WalletService*", # Wallet Service
-	"CDPSvc*", # Connected Devices Platform Service
-	"CDPUserSvc*", # Connected Devices Platform User Service_4b694
+	($ModeSafe, "SCardSvr*"), # Smart Card
+	($ModeSafe, "ScDeviceEnum*"), # Smart Card Device Enumeration Service
+	($ModeSafe, "SCPolicySvc*"), # Smart Card Removal Policy
+	($ModeSafe, "SEMgrSvc*"), # Payments and NFC/SE Manager
+	($ModeSafe, "WalletService*"), # Wallet Service
+	($ModeSafe, "CDPSvc*"), # Connected Devices Platform Service
+	($ModeSafe, "CDPUserSvc*"), # Connected Devices Platform User Service_4b694
 
 	# Gaming
 	# Disabling some of these may break XInput and/or Windows.Gaming.Input
-	"BcastDVR*",
-	"GamingService*", # "GamingServices" and "GamingServicesNet"
-	"CaptureService*",
-	"XblAuthManager*", # Xbox Live Auth Manager
-	"XblGameSave*", # Xbox Live Game Save
-	"XboxGipSvc*", # Xbox Accessory Management Service
-	"XboxNetApiSvc", # Xbox Live Networking Service
-	#"xboxgip*",
-	#"xinputhid*",
-	
+	($ModeSafe, "BcastDVR*"),
+	($ModeSafe, "GamingService*"), # "GamingServices" and "GamingServicesNet"
+	($ModeSafe, "CaptureService*"),
+	($ModeSafe, "XblAuthManager*"), # Xbox Live Auth Manager
+	($ModeSafe, "XblGameSave*"), # Xbox Live Game Save
+	($ModeSafe, "XboxGipSvc*"), # Xbox Accessory Management Service
+	($ModeSafe, "XboxNetApiSvc"), # Xbox Live Networking Service
+	#($ModeSafe, "xboxgip*"),
+	#($ModeSafe, "xinputhid*"),
+
 	# Foxit
-	"Foxit*",
-	
+	($ModeNorm, "Foxit*"),
+
 	# Logitech GHub
-	"LGHUB*"
+	($ModeNorm, "LGHUB*")
 )
 
 # We manually iterate the registry instead of using `Get-Service` here because
@@ -187,6 +198,7 @@ $ServicesDisables = @(
 #
 # https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows
 #
+$ServicesDisables = $ServicesDisables | Where {$_[0]} | %{$_[1]}
 $ServicesList = Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Services"
 foreach ($rule in $ServicesDisables) {
 	$found = $ServicesList | Where PSChildName -Like $rule
@@ -195,7 +207,7 @@ foreach ($rule in $ServicesDisables) {
 		$item = Get-ItemProperty $f.PSPath
 		$serv = Get-Service -Name $item.PSChildName
 		if ($serv.StartType -ceq "Disabled") { continue }
-		
+
 		"Disabling service `"$($item.PSChildName)`" (was: $($serv.StartType), $($serv.Status), $($serv.ServiceName))"
 		$serv | Stop-Service -Force
 
@@ -213,60 +225,63 @@ foreach ($rule in $ServicesDisables) {
 "Configuring scheduled tasks..."
 # Get-ScheduledTask | Format-Table URI, State, Description -AutoSize
 $TaskDisables = @(
-	"*MicrosoftEdge*",
-	"*OneDrive*",
-	"\Microsoft\Windows\Feedback\Siuf\DmClient*" # Device management
-	#"WinSAT", # Measures a system's performance and capabilities
-	"\Microsoft\Windows\Management\Provisioning\Cellular", # SIM integration
-	"\Microsoft\Windows\Maps\Maps*",
-	"\Microsoft*WiFiTask", # Background task for performing per user and web interactions
-	"\Microsoft\Windows\Offline Files\Background Synchronization", # This task controls periodic background synchronization of Offline Files when the user is working in an offline mode.
-	"\Microsoft\Windows\Offline Files\Logon Synchronization", # This task initiates synchronization of Offline Files when a user logs onto the system.
-	"\Microsoft\Windows\Printing\EduPrintProv",
-	"\Microsoft\Windows\RemoteAssistance*", # Checks group policy for changes relevant to Remote Assistance
-	"\Microsoft\Windows\Work Folders*",
-	"\Microsoft*FamilySafety*", # Initializes Family Safety monitoring and enforcement @ Synchronizes the latest settings with the Microsoft family features service
-	"\Microsoft\XblGameSave\XblGameSaveTask",
-	"\Microsoft\Windows\WwanSvc\NotificationTask", # Background task for performing per user and web interactions
-	"\Microsoft\Windows\Application Experience\StartupAppTask", # Scans startup entries and raises notification to the user if there are too many startup entries.
-	"\Microsoft\Windows\WindowsUpdate\Scheduled Start" # This task is used to start the Windows Update service when needed to perform scheduled operations such as scans.
-	"\Microsoft\Windows\PushToInstall\Registration", # Push to install stuff
-	
+	($ModeSafe, "*MicrosoftEdge*"),
+	($ModeSafe, "*OneDrive*"),
+	($ModeSafe, "\Microsoft\Windows\Feedback\Siuf\DmClient*"), # Device management
+	#($ModeSafe, "WinSAT"), # Measures a system's performance and capabilities
+	($ModeSafe, "\Microsoft\Windows\Management\Provisioning\Cellular"), # SIM integration
+	($ModeSafe, "\Microsoft\Windows\Maps\Maps*"),
+	($ModeSafe, "\Microsoft*WiFiTask"), # Background task for performing per user and web interactions
+	($ModeSafe, "\Microsoft\Windows\Offline Files\Background Synchronization"), # This task controls periodic background synchronization of Offline Files when the user is working in an offline mode.
+	($ModeSafe, "\Microsoft\Windows\Offline Files\Logon Synchronization"), # This task initiates synchronization of Offline Files when a user logs onto the system.
+	($ModeSafe, "\Microsoft\Windows\Printing\EduPrintProv"),
+	($ModeSafe, "\Microsoft\Windows\RemoteAssistance*"), # Checks group policy for changes relevant to Remote Assistance
+	($ModeSafe, "\Microsoft\Windows\Work Folders*"),
+	($ModeSafe, "\Microsoft*FamilySafety*"), # Initializes Family Safety monitoring and enforcement @ Synchronizes the latest settings with the Microsoft family features service
+	($ModeSafe, "\Microsoft\XblGameSave\XblGameSaveTask"),
+	($ModeSafe, "\Microsoft\Windows\WwanSvc\NotificationTask"), # Background task for performing per user and web interactions
+	($ModeSafe, "\Microsoft\Windows\Application Experience\StartupAppTask"), # Scans startup entries and raises notification to the user if there are too many startup entries.
+	($ModeSafe, "\Microsoft\Windows\WindowsUpdate\Scheduled Start"), # This task is used to start the Windows Update service when needed to perform scheduled operations such as scans.
+	($ModeSafe, "\Microsoft\Windows\PushToInstall\Registration"), # Push to install stuff
+
 	# Customer Experience Program
-	# Get-ScheduledTask | Where Description -Like "*Customer Experience*"
-	"\Microsoft\Windows\Customer Experience Improvement Program\Consolidator", # If the user has consented to participate in the Windows Customer Experience Improvement Program, this job collects and sends usage data to Microsoft.
-	"\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip", # The USB CEIP (Customer Experience Improvement Program) task collects Universal Serial Bus related statistics and information about your machine and sends it to the Windows Device Connectivity engineering...
-	"*KernelCEIPTask*",
-	"\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector", # The Windows Disk Diagnostic reports general disk and system information to Microsoft for users participating in the Customer Experience Program.
-	"\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser", # Collects program telemetry information if opted-in to the Microsoft Customer Experience Improvement Program.
-	"\Microsoft\Windows\Autochk\Proxy", # This task collects and uploads autochk SQM data if opted-in to the Microsoft Customer Experience Improvement Program.
-	
+	# Get-ScheduledTask | Where Description -Like "*Customer Experience*"),
+	($ModeSafe, "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"), # If the user has consented to participate in the Windows Customer Experience Improvement Program, this job collects and sends usage data to Microsoft.
+	($ModeSafe, "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"), # The USB CEIP (Customer Experience Improvement Program) task collects Universal Serial Bus related statistics and information about your machine and sends it to the Windows Device Connectivity engineering...
+	($ModeSafe, "*KernelCEIPTask*"),
+	($ModeSafe, "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"), # The Windows Disk Diagnostic reports general disk and system information to Microsoft for users participating in the Customer Experience Program.
+	($ModeSafe, "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"), # Collects program telemetry information if opted-in to the Microsoft Customer Experience Improvement Program.
+	($ModeSafe, "\Microsoft\Windows\Autochk\Proxy"), # This task collects and uploads autochk SQM data if opted-in to the Microsoft Customer Experience Improvement Program.
+
 	# Workplace
-	"\Microsoft\Windows\Workplace Join\Automatic-Device-Join", # Register this computer if the computer is already joined to an Active Directory domain.
-	"\Microsoft\Windows\Workplace Join\Device-Sync", # Sync device attributes to Azure Active Directory.
-	"\Microsoft\Windows\Workplace Join\Recovery-Check", # Performs recovery check.
-	
+	($ModeSafe, "\Microsoft\Windows\Workplace Join\Automatic-Device-Join"), # Register this computer if the computer is already joined to an Active Directory domain.
+	($ModeSafe, "\Microsoft\Windows\Workplace Join\Device-Sync"), # Sync device attributes to Azure Active Directory.
+	($ModeSafe, "\Microsoft\Windows\Workplace Join\Recovery-Check"), # Performs recovery check.
+
 	# Windows Update
-	"\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker", # Forces rebooot after update
-	"\Microsoft\Windows\UpdateOrchestrator\Refresh Settings",
-	#"\Microsoft\Windows\UpdateOrchestrator\Report policies",
-	#"\Microsoft\Windows\UpdateOrchestrator\Schedule scan",
-	#"\Microsoft\Windows\UpdateOrchestrator\Schedule scan static task",
-	#"\Microsoft\Windows\UpdateOrchestrator\Schedule work",
-	#"\Microsoft\Windows\UpdateOrchestrator\UUS Failover Task",
-	
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Refresh Settings"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Report Policies"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Schedule Maintenance Work"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Schedule Scan Static Task"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Schedule Scan"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Schedule Work"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker"), # Forces rebooot after update
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\UUS Failover Task"),
+
 	# Out of box experience
-	# Get-ScheduledTask | Where URI -like "*oobe*"
-	"\Microsoft\Windows\UpdateOrchestrator\Start Oobe Expedite Work",
-	"\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScanAfterUpdate",
-	"\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan_LicenseAccepted",
-	"\Microsoft\Windows\WwanSvc\OobeDiscovery"
+	# Get-ScheduledTask | Where URI -like "*oobe*"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Start Oobe Expedite Work"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScanAfterUpdate"),
+	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan_LicenseAccepted"),
+	($ModeSafe, "\Microsoft\Windows\WwanSvc\OobeDiscovery")
 )
 
 # Fix access issues for UpdateOrchestrator tasks
 $null = takeown /F "C:\Windows\System32\Tasks\Microsoft\Windows\UpdateOrchestrator" /A /R
 $null = icacls "C:\Windows\System32\Tasks\Microsoft\Windows\UpdateOrchestrator" /grant *S-1-5-32-544:F /T
 
+$TaskDisables = $TaskDisables | Where {$_[0]} | %{$_[1]}
 Disable-TasksLike $TaskDisables
 
 ################################################################################################################################################################
@@ -276,63 +291,65 @@ Disable-TasksLike $TaskDisables
 # Get-NetFirewallRule | Format-Table DisplayName, Group, DisplayGroup, Description -AutoSize
 $FirewallDisables = @(
 	# Specific apps
-	"Cortana",
-	"Feedback Hub",
-	"Get Help",
-	"Microsoft family features",
-	"Microsoft Tips",
-	"Microsoft People",
-	"Microsoft Photos",
-	"Microsoft Teams",
-	"Microsoft To Do",
-	"Microsoft Content",
-	"Movies & TV",
-	"MSN Weather",
-	"Take a test",
-	"Windows Calculator",
-	"Windows Camera",
-	"Windows Media Player",
-	"*Solitaire*",
+	($ModeSafe, "Cortana"),
+	($ModeSafe, "Feedback Hub"),
+	($ModeSafe, "Get Help"),
+	($ModeSafe, "Microsoft family features"),
+	($ModeSafe, "Microsoft Tips"),
+	($ModeSafe, "Microsoft People"),
+	($ModeSafe, "Microsoft Photos"),
+	($ModeSafe, "Microsoft Teams"),
+	($ModeSafe, "Microsoft To Do"),
+	($ModeSafe, "Microsoft Content"),
+	($ModeSafe, "Movies & TV"),
+	($ModeSafe, "MSN Weather"),
+	($ModeSafe, "Take a test"),
+	($ModeSafe, "Windows Calculator"),
+	($ModeSafe, "Windows Camera"),
+	($ModeSafe, "Windows Media Player"),
+	($ModeSafe, "*Solitaire*"),
 
 	# Wild cards
-	"*Delivery Optimization*",
-	"*Cast to Device*",
-	"*File and Printer Sharing*",
-	"*Work or School*",
-	"*Xbox*",
-	
+	($ModeSafe, "*Delivery Optimization*"),
+	($ModeSafe, "*Cast to Device*"),
+	($ModeAggr, "*File and Printer Sharing*"),
+	($ModeAggr, "*Work or School*"),
+	($ModeSafe, "*Xbox*"),
+
 	# Remote Access, Desktop, Discovery, Management
-	"*AllJoyn*",
-	"*Proximity sharing*",
-	"*Remote Event*",
-	"*Remote Service Management*",
-	"*Remote Scheduled*",
-	"*Remote Volume Management*",
-	"*Remote Access*",
-	"*Remote Assist*",
-	"*Remote Desktop*",
-	"Windows Device Management*",
-	"Microsoft Media Foundation Network*"
-	"*Network Discovery*",
-	"*BranchCache*",
-	
+	($ModeSafe, "*AllJoyn*"),
+	($ModeSafe, "*Proximity sharing*"),
+	($ModeSafe, "*Remote Event*"),
+	($ModeSafe, "*Remote Service Management*"),
+	($ModeSafe, "*Remote Scheduled*"),
+	($ModeSafe, "*Remote Volume Management*"),
+	($ModeSafe, "*Remote Access*"),
+	($ModeSafe, "*Remote Assist*"),
+	($ModeSafe, "*Remote Desktop*"),
+	($ModeAggr, "Windows Device Management*"),
+	($ModeAggr, "Microsoft Media Foundation Network*"),
+	($ModeAggr, "*Network Discovery*"),
+	($ModeAggr, "*BranchCache*"),
+
 	# Third party
-	"*Clipchamp*",
-	"*king.com*",
-	"*Spotify*",
-	"*Disney*",
-	"*CandyCrush*",
-	"*Twitter*",
-	"*Netflix*",
-	"*Pandora*",
-	"*Facebook*",
-	"*Dolby*",
-	"*Minecraft*",
-	"*Hulu*",
-	"*Amazon*",
-	"*Tiktok*",
-	"*Bytedance*"
+	($ModeSafe, "*Clipchamp*"),
+	($ModeSafe, "*king.com*"),
+	($ModeSafe, "*Spotify*"),
+	($ModeSafe, "*Disney*"),
+	($ModeSafe, "*CandyCrush*"),
+	($ModeSafe, "*Twitter*"),
+	($ModeSafe, "*Netflix*"),
+	($ModeSafe, "*Pandora*"),
+	($ModeSafe, "*Facebook*"),
+	($ModeSafe, "*Dolby*"),
+	($ModeSafe, "*Minecraft*"),
+	($ModeSafe, "*Hulu*"),
+	($ModeSafe, "*Amazon*"),
+	($ModeSafe, "*Tiktok*"),
+	($ModeSafe, "*Bytedance*")
 )
+
+$FirewallDisables = $FirewallDisables | Where {$_[0]} | %{$_[1]}
 
 $FirewallRules = Get-NetFirewallRule | Where Enabled -EQ True # huge speed up
 foreach ($rule in $FirewallDisables) {
@@ -354,6 +371,7 @@ foreach ($rule in $FirewallDisables) {
 "Configuring app permisions..."
 
 # Set as though changed through Windows settings UI
+# These shouldn't need any mode filters because they are pretty easy to enable/disable from Windows settings.
 $AppPerm_UserChoice = @(
 	"activity",
 	"appDiagnostics",
@@ -436,13 +454,16 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAc
 # See also: $FirewallDisables
 ################################################################################################################################################################
 "Configuring security settings..."
+
 # Disable administrative shares
 Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareServer" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareWks" -Type DWord -Value 0
 
 # User Account Control
-Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 0
+if ($ModeAggr) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 0
+	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 0
+}
 
 # Mapped Drives
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -Type DWord -Value 0
@@ -496,32 +517,34 @@ Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Peernet" -Name "Disabled" 
 # 	5=use local settings
 # 	7=notify install + notify restart
 # wuauserv: windows update service, 3 = manual start
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUOptions" -Type DWord -Value 2
-Set-Registry -Path "HKLM:\System\CurrentControlSet\Services\wuauserv" -Name "Start" -Type DWord -Value 3
+if ($ModeAggr) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type DWord -Value 0
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUOptions" -Type DWord -Value 2
+	Set-Registry -Path "HKLM:\System\CurrentControlSet\Services\wuauserv" -Name "Start" -Type DWord -Value 3
+}
 
 # Create a task to update Windows Defender even if updates are turned off
 # https://www.microsoft.com/en-us/wdsi/defenderupdates
 # Times use ISO 8601 durations: https://en.wikipedia.org/wiki/ISO_8601#Durations
-# 
+#
 # Some reason Windows Update still thinks there are updates some times.
 # If you check all the version numbers with `MpCmdRun -SignatureUpdate` you will
 # see that we are actually up to date.
-&{
+if ($ModeAggr) {&{
 	try {
 		$ErrorActionPreference = "Stop"
 		$user = "NT AUTHORITY\SYSTEM"
 		$name = "Windows Defender Update"
 		$path = "\dnlj\"
 		$full = Join-Path $path $name
-		
+
 		$action = New-ScheduledTaskAction -Execute "%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Argument "-SignatureUpdate"
 		$settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -StartWhenAvailable -MultipleInstances IgnoreNew -DontStopIfGoingOnBatteries
 		$trigger = New-ScheduledTaskTrigger -AtLogOn
 		$trigger.Delay = 'PT90S'
 		$trigger.Repetition = New-CimInstance -ClientOnly -ClassName "MSFT_TaskRepetitionPattern" -Namespace "Root/Microsoft/Windows/TaskScheduler"`
 			-Property @{Duration="";Interval="PT2H";StopAtDurationEnd=$true}
-			
+
 		if (!($task = Get-ScheduledTask | Where URI -EQ $full)) {
 			$task = Register-ScheduledTask -TaskName $name -TaskPath $path -User $user -Trigger $trigger -Action $action -Settings $settings
 			Write-Host -ForegroundColor green "Windows Defender Update task created ($($task.URI))."
@@ -531,19 +554,23 @@ Set-Registry -Path "HKLM:\System\CurrentControlSet\Services\wuauserv" -Name "Sta
 	} catch {
 		Write-Host -ForegroundColor red "Unable to create Windows Defender update task. Your system may be at risk."
 	}
-}
+}}
 
 # Driver Updates
 # You can also allow/deny specific devies with Group Policy.
 # `Local Computer Policy → Computer Configuration → Administrative Templates → System → Device Installation → Device Installation Restrictions`
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ExcludeWUDriversInQualityUpdate" -Type DWord -Value 1
+if ($ModeAggr) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ExcludeWUDriversInQualityUpdate" -Type DWord -Value 1
+}
 
 # Stability (these do not affect security updates)
 # See https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "BranchReadinessLevel" -Type DWord -Value 16 # 16 = Semi Annual
-# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgrade" -Type DWord -Value 1
-# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgradePeriod" -Type DWord -Value 6 # Months
-# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpdatePeriod" -Type DWord -Value 4 # Weeks
+if ($ModeAggr) {
+	# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgrade" -Type DWord -Value 1
+	# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgradePeriod" -Type DWord -Value 6 # Months
+	# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpdatePeriod" -Type DWord -Value 4 # Weeks
+}
 
 # Quality Updates
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferQualityUpdates" -Type DWord -Value 1
@@ -565,10 +592,12 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimizati
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization" -Name "SystemSettingsDownloadMode" -Type DWord -Value 0
 
 # Disable automatic updates for non-windows things
-Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" -Name "AutoDownload" -Type DWord -Value 2
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -Type DWord -Value 2
-Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Services\7971f918-a847-4430-9279-4a52d1efe18d" -Name "RegisteredWithAU" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" -Name "PreventDeviceMetadataFromNetwork" -Type DWord -Value 1
+if ($ModeAggr) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" -Name "AutoDownload" -Type DWord -Value 2
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -Type DWord -Value 2
+	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Services\7971f918-a847-4430-9279-4a52d1efe18d" -Name "RegisteredWithAU" -Type DWord -Value 0
+	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" -Name "PreventDeviceMetadataFromNetwork" -Type DWord -Value 1
+}
 
 # Wake for updates
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUPowerManagement" -Type DWord -Value 0
@@ -679,7 +708,9 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -N
 Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Edge" -Name "ExtensionSettings" -Type String -Value '{"*":{},"odfafepnkmbhccpbejgmiehpchacaeak":{"toolbar_state":"default_shown","installation_mode":"normal_installed","update_url":"https://edge.microsoft.com/extensionwebstorebase/v1/crx"},"lmijmgnfconjockjeepmlmkkibfgjmla":{"toolbar_state":"default_shown","installation_mode":"normal_installed","update_url":"https://edge.microsoft.com/extensionwebstorebase/v1/crx"},"mdkdmaickkfdekbjdoojfalpbkgaddei":{"toolbar_state":"default_shown","installation_mode":"normal_installed","update_url":"https://edge.microsoft.com/extensionwebstorebase/v1/crx"}}'
 
 # SmartScreen (Chromium)
-Set-Registry -Path "HKCU:\Software\Policies\Microsoft\Edge" -Name "SmartScreenEnabled" -Type DWord -Value 0
+if ($ModeAggr) {
+	Set-Registry -Path "HKCU:\Software\Policies\Microsoft\Edge" -Name "SmartScreenEnabled" -Type DWord -Value 0
+}
 
 # Legacy Edge
 Set-Registry -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\Main" -Name "DoNotTrack" -Type DWord -Value 1
@@ -695,7 +726,9 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Name "AllowPrelaunch" -Type DWord -Value 0
 
 # SmartScreen (legacy)
-Set-Registry -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\PhishingFilter" -Name "EnabledV9" -Type DWord -Value 0
+if ($ModeAggr) {
+	Set-Registry -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\PhishingFilter" -Name "EnabledV9" -Type DWord -Value 0
+}
 
 
 ################################################################################################################################################################
@@ -730,7 +763,9 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Settings" -Na
 
 # Disable "Find My Device"
 # Group Policy version of LocationSyncEnabled
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\FindMyDevice" -Name "AllowFindMyDevice" -Type DWord -Value 0
+if ($ModeNorm) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\FindMyDevice" -Name "AllowFindMyDevice" -Type DWord -Value 0
+}
 
 # Remote install of apps from another device
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\PushToInstall" -Name "DisablePushToInstall" -Type DWord -Value 1
@@ -810,9 +845,11 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "Pub
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type DWord -Value 0
 
 # Clipboard
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowClipboardHistory" -Type DWord -Value 0
-Set-Registry -Path "HKCU:\Software\Microsoft\Clipboard" -Name "EnableClipboardHistory" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowCrossDeviceClipboard" -Type DWord -Value 0
+if ($ModeNorm) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowClipboardHistory" -Type DWord -Value 0
+	Set-Registry -Path "HKCU:\Software\Microsoft\Clipboard" -Name "EnableClipboardHistory" -Type DWord -Value 0
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowCrossDeviceClipboard" -Type DWord -Value 0
+}
 
 # Password Reveal
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredUI" -Name "DisablePasswordReveal" -Type DWord -Value 1
@@ -949,7 +986,7 @@ Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power
 # TODO: configure power settings
 #
 # Set active scheme
-# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\ActivePowerScheme 
+# HKLM:\System\CurrentControlSet\Control\Power\User\PowerSchemes\ActivePowerScheme
 #
 # Some info under powercfg: https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options
 # See: powercfg /query
