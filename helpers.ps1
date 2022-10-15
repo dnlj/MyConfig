@@ -129,3 +129,23 @@ function Set-Registry {
 	
 	Set-ItemProperty -Force -Path $Path -Name $Name -Type $Type -Value $Value
 }
+
+function Remove-Registry {
+	param (
+		[Parameter(Mandatory)][string] $Path,
+		[Parameter(Mandatory)][string] $Name
+	)
+	
+	if (!($found = Get-Item $Path -ErrorAction SilentlyContinue)) {
+		return
+	}
+	
+	if ($VerbosePreference -ne "SilentlyContinue") {
+		$Value = $found.GetValue($Name)
+		if ($Value -eq $null) { return }
+		
+		$Type = $found.GetValueKind($Name)
+		"Removing registry entry `"$full`" = ($Type):`"$Value`"."
+	}
+	Remove-ItemProperty -Force -Path $Path -Name $Name
+}

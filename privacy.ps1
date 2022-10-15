@@ -3,14 +3,14 @@
 param (
 	[Parameter(Mandatory)]
 	[ValidateSet("Safe", "Normal", "Aggressive")]
-	[string]$Mode
+	[string] $Mode
 )
-
-. .\helpers.ps1
 
 Set-Variable -Option Constant -Name "ModeAggr" -Value ($Mode -eq "Aggressive")
 Set-Variable -Option Constant -Name "ModeNorm" -Value ($ModeAggr -or ($Mode -eq "Normal"))
 Set-Variable -Option Constant -Name "ModeSafe" -Value ($ModeNorm -or ($Mode -eq "Safe"))
+
+. .\helpers.ps1
 
 try { $null = Stop-Transcript } catch {}
 Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.settings.$(Get-Date -F yyyyMMddTHHmmssffff).log"
@@ -112,8 +112,11 @@ $ServicesDisables = @(
 	($ModeSafe, "NPSMSvc*"), # Now playing session manager
 	($ModeSafe, "AppReadiness"), # App Readiness - Windows Store app install and setup
 	($ModeAggr, "cbdhsvc*"), # Clipboard service - for enhanceed clipboard: history, device sharing, etc.
-	 # ! DONT DISABLE ! ($ModeAggr,"TextInputManagementService*"), # DONT DISABLE: breaks keyboard input.
-
+	# ! DONT DISABLE ! ($ModeAggr,"TextInputManagementService*"), # DONT DISABLE: breaks keyboard input.
+	
+	# TODO: UNTESTED
+	($ModeAggr, "TokenBroker*"), # This service is used by Web Account Manager to provide single-sign-on to apps and services.
+	
 	# Privacy, Tracking, and Telemetry
 	($ModeSafe, "SSDPSRV"), # SSDP Discovery - Simple Search and Discovery Protocol
 	($ModeSafe, "lfsvc"), # Geolocation Service
@@ -364,6 +367,15 @@ foreach ($rule in $FirewallDisables) {
 		$f | Disable-NetFirewallRule
 	}
 }
+
+
+################################################################################################################################################################
+# Startup / Autorun
+################################################################################################################################################################
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" -Name "OneDrive" -Type Binary -Value 0
+Remove-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "OneDrive"
+Remove-Registry -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "OneDrive"
+
 
 ################################################################################################################################################################
 # App Perm
@@ -735,6 +747,9 @@ if ($ModeAggr) {
 # Privacy
 ################################################################################################################################################################
 "Configuring privacy settings..."
+
+# Search filtering
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "SafeSearchMode" -Type DWord -Value 0
 
 # .NET Telemetry
 [System.Environment]::SetEnvironmentVariable('DOTNET_CLI_TELEMETRY_OPTOUT', '1', [System.EnvironmentVariableTarget]::Machine)
@@ -1214,6 +1229,9 @@ Set-Registry -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold1" -Type Str
 Set-Registry -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold2" -Type String -Value "0"
 Set-Registry -Path "HKCU:\Control Panel\Mouse" -Name "MouseTrails" -Type String -Value "0"
 Set-Registry -Path "HKCU:\Control Panel\Mouse" -Name "DoubleClickSpeed" -Type String -Value "800"
+
+# Dont jump when using multiple monitors w/ different resolutions
+Set-Registry -Path "HKCU:\Control Panel\Cursors" -Name "CursorDeadzoneJumpingSetting" -Type DWord -Value "0"
 
 
 ################################################################################################################################################################

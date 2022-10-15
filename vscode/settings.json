@@ -1,0 +1,68 @@
+// Place your settings in this file to overwrite the default settings
+{
+	"editor.insertSpaces": false,
+	"editor.minimap.enabled": false,
+	"editor.autoIndent": "full",
+	"editor.detectIndentation": false,
+	"editor.autoClosingBrackets": "never",
+	"editor.trimAutoWhitespace": false,
+	"files.eol": "\n",
+	// "liveServer.settings.donotShowInfoMsg": true,
+	"telemetry.enableCrashReporter": false,
+	"telemetry.enableTelemetry": false,
+	"telemetry.telemetryLevel": "off",
+	"markdown.styles": [
+		//"https://raw.githubusercontent.com/mjbvz/vscode-github-markdown-preview-style/master/github-markdown.css"
+	],
+	"window.zoomLevel": 0,
+	"editor.cursorStyle": "line-thin",
+	"editor.suggest.localityBonus": true,
+	"editor.tabCompletion": "on",
+	"python.pythonPath": "D:\\Python38\\python.exe",
+    "C_Cpp.updateChannel": "Insiders",
+	"liveServer.settings.donotVerifyTags": true,
+	"liveServer.settings.donotShowInfoMsg": true,
+	"explorer.autoReveal": false,
+	"editor.fontSize": 12.2,
+	"files.autoSave": "off",
+	"editor.autoClosingQuotes": "never",
+	"editor.autoClosingOvertype": "never",
+	"editor.links": false,
+	"editor.autoSurround": "never",
+	"increment-selection.topToBottom": true,
+    "python.languageServer": "Pylance",
+	"jupyter.sendSelectionToInteractiveWindow": false,
+	"editor.colorDecorators": false,
+	"editor.lightbulb.enabled": false,
+	"vetur.completion.autoImport": false,
+	"vetur.validation.template": false,
+	"eslint.validate": [
+		"javascript",
+		"javascriptreact",
+		"vue"
+	],
+	"rewrap.wholeComment": false,
+	"rewrap.wrappingColumn": 80,
+	"html.format.wrapLineLength": 0,
+	"workbench.editorAssociations": {
+		"*.ipynb": "jupyter.notebook.ipynb"
+	},
+	"security.workspace.trust.untrustedFiles": "open",
+	"debug.terminal.clearBeforeReusing": true,
+	"vetur.format.options.tabSize": 4,
+	"vetur.format.options.useTabs": true,
+	"vetur.format.scriptInitialIndent": true,
+	"vetur.format.styleInitialIndent": true,
+	"liveServer.settings.CustomBrowser": "firefox",
+	"liveServer.settings.fullReload": true,
+	"editor.multiCursorModifier": "ctrlCmd",
+	"cSpell.enableFiletypes": [
+		"!plaintext"
+	],
+	"diffEditor.wordWrap": "off",
+	"editor.accessibilitySupport": "off",
+	"editor.wordWrapColumn": 120,
+	"markdown-preview-github-styles.colorTheme": "light",
+	"debug.console.wordWrap": false,
+	"diffEditor.maxFileSize": 300
+}

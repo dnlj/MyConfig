@@ -192,15 +192,20 @@ $programs = @(
 		Page="https://visualstudio.microsoft.com/";
 		Down="https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release"
 	},
-	@{ # Visual Studio Code
-		Type="Install";
-		Page="https://code.visualstudio.com/download";
-		Down="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64"
-	},
+	#@{ # Visual Studio Code
+	#	Type="Install";
+	#	Page="https://code.visualstudio.com/download";
+	#	Down="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64"
+	#},
 	@{ # Notepad++
 		Type="Install";
 		Page="https://notepad-plus-plus.org/downloads/";
 		Down=""
+	},
+	@{ # Autoruns
+		Type="Tools";
+		Page="https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns";
+		Down="https://download.sysinternals.com/files/Autoruns.zip"
 	},
 	@{ # Process Explorer
 		Type="Tools";
