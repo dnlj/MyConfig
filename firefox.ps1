@@ -196,8 +196,8 @@ if ($ff = Find-Firefox) {
 	$profString | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $Path "profiles.ini")
 	'{"firstUse": 0,"created": 0}' | Out-File -Encoding ascii -NoNewline -FilePath (Join-Path $ProfPath "times.json")
 	
-	Copy-Item "firefox_user.js" -Destination (Join-Path $ProfPath "user.js")
-	Copy-Item "firefox_userChrome.css" -Destination (Join-Path $ProfPath "chrome/userChrome.css")
+	Copy-Item "firefox/user.js" -Destination (Join-Path $ProfPath "user.js")
+	Copy-Item "firefox/userChrome.css" -Destination (Join-Path $ProfPath "chrome/userChrome.css")
 }
 
 
