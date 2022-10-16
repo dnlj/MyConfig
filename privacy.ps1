@@ -477,6 +477,16 @@ if ($ModeAggr) {
 	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 0
 }
 
+# Smart App Control
+if ($ModeAggr) {
+	Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" -Name "VerifiedAndReputablePolicyState" -Type DWord -Value 0
+}
+
+# SmartScreen
+if ($ModeAggr) {
+	#Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableSmartScreen" -Type DWord -Value 0
+}
+
 # Mapped Drives
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -Type DWord -Value 0
 
@@ -569,8 +579,8 @@ if ($ModeAggr) {&{
 }}
 
 # Driver Updates
-# You can also allow/deny specific devies with Group Policy.
-# `Local Computer Policy → Computer Configuration → Administrative Templates → System → Device Installation → Device Installation Restrictions`
+# You can also allow/deny specific devices with Group Policy.
+# `Local Computer Policy > Computer Configuration > Administrative Templates > System > Device Installation > Device Installation Restrictions`
 if ($ModeAggr) {
 	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ExcludeWUDriversInQualityUpdate" -Type DWord -Value 1
 }
@@ -745,6 +755,7 @@ if ($ModeAggr) {
 
 ################################################################################################################################################################
 # Privacy
+# https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services
 ################################################################################################################################################################
 "Configuring privacy settings..."
 
@@ -962,7 +973,12 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notification
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_TOASTS_ABOVE_LOCK" -Type DWord -Value 0
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_CRITICAL_TOASTS_ABOVE_LOCK" -Type DWord -Value 0
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_NOTIFICATION_SOUND" -Type DWord -Value 0
-
+#Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "EnableExpandedToastNotifications" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "DisallowNotificationMirroring" -Type DWord -Value 1
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoToastApplicationNotificationOnLockScreen" -Type DWord -Value 1
+#Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoToastApplicationNotification" -Type DWord -Value 1
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoTileApplicationNotification" -Type DWord -Value 1
+Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoCloudApplicationNotification" -Type DWord -Value 1
 
 ################################################################################################################################################################
 # Performance
