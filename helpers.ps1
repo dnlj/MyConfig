@@ -136,7 +136,7 @@ function Remove-Registry {
 		[Parameter(Mandatory)][string] $Name
 	)
 	
-	if (!($found = Get-Item $Path -ErrorAction SilentlyContinue)) {
+	if (!($found = Get-ItemProperty $Path $Name -ErrorAction SilentlyContinue)) {
 		return
 	}
 	
