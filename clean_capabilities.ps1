@@ -11,20 +11,20 @@ $CapabilityDisables = @(
 	"App.StepsRecorder*",
 	"*InternetExplorer*",
 	"*Hello.Face*",
-	#"Language.Basic~~~en-US~0.0.1.0"
-	#"Language.Handwriting~~~en-US~0.0.1.0"
-	#"Language.OCR~~~en-US~0.0.1.0"
-	#"Language.Speech~~~en-US~0.0.1.0"
-	#"Language.TextToSpeech~~~en-US~0.0.1.0"
+	#"Language.Basic*"
+	#"Language.Handwriting*"
+	#"Language.OCR*"
+	#"Language.Speech*"
+	#"Language.TextToSpeech*"
 	"MathRecognizer*",
-	#"Media.WindowsMediaPlayer",
-	#"Microsoft.Wallpapers.Extended",
-	#"Microsoft.Windows.Notepad.System",
-	#"Microsoft.Windows.PowerShell.ISE",
-	#"Microsoft.Windows.WordPad",
+	"Media.WindowsMediaPlayer*",
+	#"Microsoft.Wallpapers.Extended*",
+	#"Microsoft.Windows.Notepad.System*",
+	#"Microsoft.Windows.PowerShell.ISE*",
+	#"Microsoft.Windows.WordPad*",
 	"*OneSync*"
-	#"OpenSSH.Client",
-	#"Print.Management.Console",
+	#"OpenSSH.Client*",
+	#"Print.Management.Console*",
 )
 
 $CapabilityList = Get-WindowsCapability -Online | Where State -EQ "Installed"

@@ -18,7 +18,7 @@ $PackageDisables = @(
 	#"Microsoft-Windows-LanguageFeatures-OCR*",
 	#"Microsoft-Windows-LanguageFeatures-Speech*",
 	#"Microsoft-Windows-LanguageFeatures-TextToSpeech*",
-	#"Microsoft-Windows-MediaPlayer*",
+	"Microsoft-Windows-MediaPlayer*",
 	#"Microsoft-Windows-Notepad-System*",
 	#"Microsoft-Windows-PowerShell-ISE*",
 	#"Microsoft-Windows-Printing-PMCPPC*",
@@ -30,16 +30,26 @@ $PackageDisables = @(
 )
 
 $PackageList = Get-WindowsPackage -Online | Where PackageState -EQ "Installed"
-
-"Disabling Windows packages is currently bugged. Skipping."
-# Some reason we get invalid package on the Remove-WindowsPackage line
-#foreach ($pack in $PackageDisables) {
-#	$found = $PackageList | Where PackageName -Like $pack
-#	foreach ($f in $found) {
-#		"Removing optional feature `"$($f.PackageName)`"."
-#		$null = $f | Remove-WindowsPackage -Online -NoRestart
-#	}
-#}
+foreach ($pack in $PackageDisables) {
+	$found = $PackageList | Where PackageName -Like $pack
+	foreach ($f in $found) {
+		try {
+			$null = $f | Remove-WindowsPackage -Online -NoRestart
+			"Removed package `"$($f.PackageName)`"."
+		} catch [System.Runtime.InteropServices.COMException] {
+			# Expected error.
+			# Some packages have multiple version and can only be removed through the "base" version.
+			# Useing try/catch since i can't find any info on this or package name formats.
+			#
+			# I think if i really wanted to i couldl parse the package name to filter these out
+			# but that seems somewhat fragile since i cant find any info on name formats.
+			#
+			# Names look something like (note the en-US diff):
+			#   Error: Some-Package-Name-Here~1a23b4cf34g234~amd64~en-US~10.0.22621.1
+			#   Good:  Some-Package-Name-Here~1a23b4cf34g234~amd64~~10.0.22621.1
+		}
+	}
+}
 
 "Done removing Windows packages. Restart may be required."
 Stop-Transcript

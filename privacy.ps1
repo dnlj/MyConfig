@@ -17,6 +17,16 @@ Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.settings.$(Get-Date -F yyyyM
 
 $StartTime = Get-Date
 
+################################################################################################################################################################
+# Notes
+################################################################################################################################################################
+# https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services
+# https://www.stigviewer.com/stig/microsoft_windows_10/
+
+
+################################################################################################################################################################
+# Cloud
+################################################################################################################################################################
 # A lot of these are suggested apps, not even Microsoft or Windows
 $CDMSubNumbers = @(
 	"202914",
@@ -517,9 +527,6 @@ Set-Registry -Path "HKLM:\Software\Microsoft\PolicyManager\default\WiFi\AllowInt
 # Disable Peernet
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Peernet" -Name "Disabled" -Type DWord -Value 1
 
-# SmartScreen
-# TODO: https://www.stigviewer.com/stig/microsoft_windows_10/2022-04-08/finding/V-220836
-#Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "EnableSmartScreen" -Type DWord -Value 0
 
 ################################################################################################################################################################
 # Updates
@@ -755,7 +762,6 @@ if ($ModeAggr) {
 
 ################################################################################################################################################################
 # Privacy
-# https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services
 ################################################################################################################################################################
 "Configuring privacy settings..."
 
