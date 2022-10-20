@@ -765,6 +765,9 @@ if ($ModeAggr) {
 ################################################################################################################################################################
 "Configuring privacy settings..."
 
+# Narrator QuickStart
+Set-Registry -Path "HKCU:\Software\Microsoft\Narrator\QuickStart" -Name "SkipQuickStart" -Type DWord -Value 1
+
 # Search filtering
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "SafeSearchMode" -Type DWord -Value 0
 
