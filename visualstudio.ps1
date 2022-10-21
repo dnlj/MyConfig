@@ -5,6 +5,7 @@ $Extensions = @(
 	"MadsKristensen.AddNewFile64",
 	"MadsKristensen.AddNewFile",
 	"MikeWard-AnnArbor.VSColorOutput",
+	"MikeWard-AnnArbor.VSColorOutput64",
 	"MadsKristensen.ShowSelectionLength",
 	"stkb.Rewrap-18980",
 	##"idex.colorthemedesigner2022",
