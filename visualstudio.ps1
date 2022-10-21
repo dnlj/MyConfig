@@ -1,36 +1,37 @@
 . .\helpers.ps1
 
 $Extensions = @(
-	"https://marketplace.visualstudio.com/items?itemName=KirAntipov.LineSorterByKir",
-	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.AddNewFile64",
-	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.AddNewFile",
-	"https://marketplace.visualstudio.com/items?itemName=MikeWard-AnnArbor.VSColorOutput",
-	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ShowSelectionLength",
-	"https://marketplace.visualstudio.com/items?itemName=stkb.Rewrap-18980",
-	##"https://marketplace.visualstudio.com/items?itemName=idex.colorthemedesigner2022",
-	"https://marketplace.visualstudio.com/items?itemName=thomaswelen.SelectNextOccurrence"
+	"KirAntipov.LineSorterByKir",
+	"MadsKristensen.AddNewFile64",
+	"MadsKristensen.AddNewFile",
+	"MikeWard-AnnArbor.VSColorOutput",
+	"MadsKristensen.ShowSelectionLength",
+	"stkb.Rewrap-18980",
+	##"idex.colorthemedesigner2022",
+	"thomaswelen.SelectNextOccurrence"
 )
 
 # TODO: BeeDarkTheme
 # TODO: DocHelper
 
-$Delay = 3 # Avoid HTTP 429
 & { $ProgressPreference = 'SilentlyContinue'
 foreach ($ext in $Extensions) {
 	try {
-		Start-Sleep -Seconds $Delay
-		$content = $null
-		$content = (Invoke-WebRequest -UseBasicParsing -Uri $ext).RawContent
-		$html = New-Object -Com "HTMLFile"
-		$html.write([ref]$content)
-		$link = @($html.links | Where ClassName -eq "install-button-container")[0].Pathname
-		if ($link) {
-			Start-Sleep -Seconds $Delay
-			Download -Dir "./vsix" -Url "https://marketplace.visualstudio.com/$link"
+		$content = (Invoke-WebRequest -UseBasicParsing -Uri "https://marketplace.visualstudio.com/items?itemName=$ext").RawContent
+		
+		$null = $content -match '"AssetUri":"([^"]+)"'
+		$uri = $Matches[1]
+		
+		$null = $content -match '"Microsoft\.VisualStudio\.Services\.Payload\.FileName":"([^"]+)"'
+		$file = $Matches[1]
+		
+		if ($uri -and $file) {
+			Download -Dir "./downloads/vsix" -Url "$uri/$file"
 		} else {
-			"Unable to download $ext"
+			"Unable to find download url for $ext"
 		}
-	} catch [System.Management.Automation.ErrorRecord] {
-		"Unable to download $ext"
+	} catch [System.Management.Automation.ErrorRecord] { # Probably invalid/dead url
+		"Unable to download $ext (dead link?)"
 	}
 }}
+
