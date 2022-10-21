@@ -22,14 +22,14 @@ try {
 	Get-Command code -ErrorAction Stop | Out-Null
 	"VSCode already installed."
 } catch {
-	if (!(Get-ChildItem -Path "VSCodeSetup*.exe")) {
-		Download -Dir "." "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64"
+	if (!(Get-ChildItem -Path "./downloads/VSCodeSetup*.exe")) {
+		Download -Dir "./downloads" "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64"
 	}
 	"Running VSCode intaller..."
 	
 	# For list of tasks see: https://github.com/microsoft/vscode/blob/main/build/win32/code.iss
 	# Inno options: https://jrsoftware.org/ishelp/index.php?topic=setupcmdline
-	& "./VSCodeSetup*.exe" "/verysilent" '/tasks="addtopath"' | Out-Null
+	& "./downloads/VSCodeSetup*.exe" "/verysilent" '/tasks="addtopath"' | Out-Null
 }
 
 

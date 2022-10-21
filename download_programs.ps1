@@ -265,7 +265,7 @@ foreach ($prog in $programs) {
 
 foreach ($prog in $programs) {
 	if ($prog.Down) {
-		Download -Dir $prog.Type -Url $prog.Down
+		Download -Dir "./downloads/${prog.Type}" -Url $prog.Down
 	}
 }
 

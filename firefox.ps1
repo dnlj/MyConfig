@@ -31,18 +31,18 @@ if (Find-Firefox) {
 } else {
 	"Installing Firefox..."
 	& {
-		$found = Get-ChildItem -Path "Firefox Setup*.exe"
+		$found = Get-ChildItem -Path "./downloads/Firefox Setup*.exe"
 		if (!$found) {
-			Download -Dir "." -Url "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US"
+			Download -Dir "./downloads" -Url "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US"
 		}
 
-		$found = Get-ChildItem -Path "Firefox Setup*.exe"
+		$found = Get-ChildItem -Path "./downloads/Firefox Setup*.exe"
 		if ((!$found) -or ($found.Length -le 10mb)) {
 			Write-Host -ForegroundColor red "Incorrect version of Firefox downloaded (stub or msi)."
 		}
 
 		"Running Firefox installer..."
-		& "./Firefox Setup*.exe" $InstallOptions | Out-Null # Out-Null to force a wait
+		& "./downloads/Firefox Setup*.exe" $InstallOptions | Out-Null # Out-Null to force a wait
 	}
 	$installed = $true;
 }
