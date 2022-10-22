@@ -1,14 +1,17 @@
 . .\helpers.ps1
 
 $Extensions = @(
+	"idex.colorthemedesigner2022",
 	"KirAntipov.LineSorterByKir",
-	"MadsKristensen.AddNewFile64",
 	"MadsKristensen.AddNewFile",
+	"MadsKristensen.AddNewFile64",
+	"MadsKristensen.CopyNice",
+	#"MadsKristensen.LearntheShortcut",
+	"MadsKristensen.Shifter",
+	"MadsKristensen.ShowSelectionLength",
 	"MikeWard-AnnArbor.VSColorOutput",
 	"MikeWard-AnnArbor.VSColorOutput64",
-	"MadsKristensen.ShowSelectionLength",
 	"stkb.Rewrap-18980",
-	##"idex.colorthemedesigner2022",
 	"thomaswelen.SelectNextOccurrence"
 )
 
