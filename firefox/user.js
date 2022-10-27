@@ -21,6 +21,8 @@ user_pref("browser.theme.content-theme", 1);
 user_pref("browser.toolbars.bookmarks.visibility", "always");
 user_pref("browser.uidensity", 1);
 user_pref("browser.compactmode.show", true);
+user_pref("browser.privatebrowsing.enable-new-indicator", false); // Change top right private browser indicator just icon instead of huge label
+user_pref("browser.privateWindowSeparation.enabled", true); // Gives private windows a separate icon for alt-tab selection
 //user_pref("ui.prefersReducedMotion", 1);
 
 // Downloads
@@ -267,4 +269,5 @@ user_pref("browser.uitour.url", "");
 user_pref("pdfjs.enableScripting", false);
 user_pref("network.protocol-handler.external.ms-windows-store", false); // Disable Microsoft Store links
 user_pref("dom.event.clipboardevents.enabled", false);
+//user_pref("dom.event.contextmenu.enabled", false);
 //user_pref("permissions.delegation.enabled", false);
