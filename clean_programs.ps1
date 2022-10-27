@@ -109,7 +109,7 @@ $apps = @(
 	"microsoft.windowscommunicationsapps",
 	"Microsoft.WindowsFeedbackHub",
 	"Microsoft.WindowsMaps",
-	#"Microsoft.WindowsNotepad",
+	"Microsoft.WindowsNotepad", # This is the store version of notepad, system32/notepad still exists.
 	"Microsoft.WindowsSoundRecorder",
 	#"Microsoft.WindowsStore",
 	"Microsoft.WindowsTerminal",
@@ -129,31 +129,7 @@ $apps = @(
 "Removing preinstalled programs."
 
 foreach ($app in $apps) {
-	# Deprovision provisioned apps
-	# This must be done before the uninstall step below
-	$found = Get-AppxProvisionedPackage -Online | Where DisplayName -Like $app
-	foreach ($pack in $found) {
-		try {
-			$null = $pack | Remove-AppxProvisionedPackage -Online -AllUsers
-			"Deprovisioned $($pack.DisplayName) ($($pack.Version))."
-		} catch [System.Runtime.InteropServices.COMException] {
-			"Unable to deprovision $($pack.DisplayName) ($($pack.Version))."
-		}
-		
-		# Prevent reinstall during update https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update
-		Set-Registry  -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\$($pack.DisplayName)_$($pack.PublisherId)" -Name "(Default)" -Type String -Value ""
-	}
-	
-	# Uninstall the apps
-	$found = Get-AppxPackage -AllUsers $app
-	foreach ($pack in $found) {
-		try {
-			$pack | Remove-AppxPackage -AllUsers
-			"Removed app package $($pack.Name) ($($pack.Version))."
-		} catch [System.Runtime.InteropServices.COMException], [System.UnauthorizedAccessException] {
-			"Unable to remove app package $($pack.Name) ($($pack.Version))."
-		}
-	}
+	Remove-AppxPackageThorough -Name $app
 }
 
 "Done removing preinstalled programs."

@@ -22,6 +22,7 @@ $StartTime = Get-Date
 ################################################################################################################################################################
 # https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services
 # https://www.stigviewer.com/stig/microsoft_windows_10/
+# https://gpsearch.azurewebsites.net/
 
 
 ################################################################################################################################################################
@@ -232,6 +233,7 @@ foreach ($rule in $ServicesDisables) {
 	}
 }
 
+
 ################################################################################################################################################################
 # Tasks
 ################################################################################################################################################################
@@ -296,6 +298,7 @@ $null = icacls "C:\Windows\System32\Tasks\Microsoft\Windows\UpdateOrchestrator" 
 
 $TaskDisables = $TaskDisables | Where {$_[0]} | %{$_[1]}
 Disable-TasksLike $TaskDisables
+
 
 ################################################################################################################################################################
 # Firewall
@@ -471,6 +474,7 @@ Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\AppPrivacy" -Name 
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplication" -Name "GlobalUserDisabled" -Type DWord -Value 1 # 1 = Off
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplication" -Name "BackgroundAppGlobalToggle" -Type DWord -Value 0 # 0 = Off
 
+
 ################################################################################################################################################################
 # Security
 # See also: $FirewallDisables
@@ -538,7 +542,9 @@ Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Peernet" -Name "Disabled" 
 # WARNING: Windows Defender uses Windows Update. Disabling this will prevent Window Defender from receiving updates.
 # See update task below.
 #
-# NoAutoUpdate: 0=enabled, 1=disabled
+# NoAutoUpdate:
+#   0=updates enabled
+#   1=updates disabled
 # AUOptions:
 # 	2=notify dl
 # 	3=auto dl, notify install
@@ -564,7 +570,7 @@ if ($ModeAggr) {&{
 		$ErrorActionPreference = "Stop"
 		$user = "NT AUTHORITY\SYSTEM"
 		$name = "Windows Defender Update"
-		$path = "\dnlj\"
+		$path = "\.dnlj\"
 		$full = Join-Path $path $name
 
 		$action = New-ScheduledTaskAction -Execute "%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Argument "-SignatureUpdate"
@@ -989,6 +995,40 @@ Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Pus
 Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoTileApplicationNotification" -Type DWord -Value 1
 Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoCloudApplicationNotification" -Type DWord -Value 1
 
+
+################################################################################################################################################################
+# App Aliases
+################################################################################################################################################################
+# Paint
+Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\mspaint.exe"
+Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\mspaint.exe"
+Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\pbrush.exe"
+Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\pbrush.exe"
+
+# New notepad (10-seconds-to-launch version of notepad. still have system32/notepad)
+Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\notepad.exe"
+Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\notepad.exe"
+
+# Restore fast notepad (system32/notepad.exe)
+Remove-AppxPackageThorough -Name "Microsoft.WindowsNotepad" # Remove UWP version of notepad
+Set-Registry -Path "HKCU:\Software\Microsoft\Notepad" -Name "ShowStoreBanner" -Type DWord -Value 0 # Disable the "Notepad has an update, click here to launch"
+Remove-Registry -Path "HKCR:\Applications\notepad.exe" -Name "NoOpenWith" # Allow in "Open With" dialog.
+Remove-RegistryKey -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe" # Remove some overrides
+Set-Registry -Path "HKCR:\txtfilelegacy\DefaultIcon" -Name "(Default)" -Type String -Value "imageres.dll,-102"
+Set-Registry -Path "HKCR:\txtfilelegacy\shell\open\command" -Name "(Default)" -Type String -Value 'C:\Windows\System32\notepad.exe "%1"'
+New-Shortcut -Path "$env:USERPROFILE\Favorites\Notepad.lnk" -Target "C:\Windows\System32\notepad.exe" -Args "" # Add a link in an indexable location (or else it wont show up in Windows Search)
+
+# Add text document back to new menu
+Set-Registry -Path "HKCR:\.txt\ShellNew" -Name "NullFile" -Type String -Value ""
+Set-Registry -Path "HKCR:\txtfilelegacy" -Name "(Default)" -Type String -Value "Text Document"
+
+# Fake python (opens ms-store)
+Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\python.exe"
+Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\python.exe"
+Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\python3.exe"
+Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\python3.exe"
+
+
 ################################################################################################################################################################
 # Performance
 ################################################################################################################################################################
@@ -1098,6 +1138,9 @@ $ExplorerSettings = @(
 foreach ($set in $ExplorerSettings) {
 	Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name $set.Name -Type DWord -Value $set.Val
 }
+
+# Disable search filtering
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "SafeSearchMode" -Type DWord -Value 0
 
 # Hide extra files
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowCloudFilesInQuickAccess" -Type DWord -Value 0

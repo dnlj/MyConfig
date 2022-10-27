@@ -145,7 +145,71 @@ function Remove-Registry {
 		if ($Value -eq $null) { return }
 		
 		$Type = $found.GetValueKind($Name)
-		"Removing registry entry `"$full`" = ($Type):`"$Value`"."
+		$Full = Join-Path $Path $Name
+		"Removing registry entry `"$Full`" = ($Type):`"$Value`"."
 	}
 	Remove-ItemProperty -Force -Path $Path -Name $Name
+}
+
+function Remove-RegistryKey {
+	param (
+		[Parameter(Mandatory)][string] $Path
+	)
+	
+	if (!($found = Get-Item -Path $Path -ErrorAction SilentlyContinue)) {
+		return
+	}
+	
+	if ($VerbosePreference -ne "SilentlyContinue") {
+		"Removing registry key `"$Path`""
+	}
+	Remove-Item -Recurse -Force $Path
+}
+
+function New-Shortcut {
+	param (
+		[Parameter(Mandatory)][string] $Path,
+		[Parameter(Mandatory)][string] $Target,
+		[Parameter()][string] $Args
+	)
+	
+	$null = New-Item -ItemType Directory -Force -Path (Split-Path $Path)
+	
+	# For more arguments: https://learn.microsoft.com/en-us/troubleshoot/windows-client/admin-development/create-desktop-shortcut-with-wsh
+	$WshShell = New-Object -ComObject WScript.Shell
+	$Shortcut = $WshShell.CreateShortcut($Path)
+	$Shortcut.TargetPath = $Target
+	$Shortcut.Arguments = $Args
+	$Shortcut.Save()
+}
+
+function Remove-AppxPackageThorough {
+	param (
+		[Parameter(Mandatory)][string] $Name
+	)
+	# Deprovision provisioned apps
+	# This must be done before the uninstall step below
+	$found = Get-AppxProvisionedPackage -Online | Where DisplayName -Like $Name
+	foreach ($pack in $found) {
+		try {
+			$null = $pack | Remove-AppxProvisionedPackage -Online -AllUsers
+			"Deprovisioned $($pack.DisplayName) ($($pack.Version))."
+		} catch [System.Runtime.InteropServices.COMException] {
+			"Unable to deprovision $($pack.DisplayName) ($($pack.Version))."
+		}
+		
+		# Prevent reinstall during update https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update
+		Set-Registry  -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\$($pack.DisplayName)_$($pack.PublisherId)" -Name "(Default)" -Type String -Value ""
+	}
+	
+	# Uninstall the apps
+	$found = Get-AppxPackage -AllUsers $Name
+	foreach ($pack in $found) {
+		try {
+			$pack | Remove-AppxPackage -AllUsers
+			"Removed app package $($pack.Name) ($($pack.Version))."
+		} catch [System.Runtime.InteropServices.COMException], [System.UnauthorizedAccessException] {
+			"Unable to remove app package $($pack.Name) ($($pack.Version))."
+		}
+	}
 }
