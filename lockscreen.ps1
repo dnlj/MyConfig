@@ -1,12 +1,62 @@
 param (
-	[Parameter(Mandatory)]
+	[Parameter(Mandatory, ParameterSetName="Run")]
 	[ValidateSet("Seq", "Rand")]
 	[string] $Order,
 	
-	[Parameter(Mandatory)]
-	[string] $Root
+	[Parameter(Mandatory, ParameterSetName="Run")]
+	[string] $Root,
+	
+	[Parameter(Mandatory, ParameterSetName="Install")]
+	[switch] $Install
 )
 
+
+################################################################################################################################################################
+# Install
+################################################################################################################################################################
+if ($Install) {
+	$filepath = "C:\.dnlj\lockscreen.ps1"
+	$null = New-Item -Force -Path $filepath
+	Copy-Item "lockscreen.ps1" -Destination $filepath
+	Copy-Item "bin/RunInBackground.exe" -Destination "C:\.dnlj\RunInBackground.exe"
+	
+	&{
+		try {
+			$ErrorActionPreference = "Stop"
+			$user = $env:USERNAME # "NT AUTHORITY\SYSTEM"
+			$name = "Lockscreen Rotation"
+			$path = "\.dnlj\"
+			$full = Join-Path $path $name
+			
+			$action = New-ScheduledTaskAction -Execute "C:\.dnlj\RunInBackground.exe" -Argument "powershell.exe -NoLogo -NonInteractive $filepath -Order Seq -Root `"`$env:USERPROFILE\Pictures\Wallpapers`""
+			$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -MultipleInstances IgnoreNew -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Seconds 10)
+			
+			# New-ScheduledTaskTrigger doesnt support TASK_SESSION_UNLOCK
+			$TaskSessionStateChangeTrigger = Get-CimClass -ClassName "MSFT_TaskSessionStateChangeTrigger" -Namespace "Root/Microsoft/Windows/TaskScheduler"
+			$trigger = New-CimInstance -ClientOnly -CimClass $TaskSessionStateChangeTrigger `
+				-Property @{ StateChange = 8; } # 8 = TASK_SESSION_UNLOCK
+			
+			$princ = New-ScheduledTaskPrincipal -UserId $user -LogonType "ServiceAccount"
+			
+			if (!($task = Get-ScheduledTask | Where URI -EQ $full)) {
+				#$task = Register-ScheduledTask -TaskName $name -TaskPath $path -User $user -Trigger $trigger -Action $action -Settings $settings
+				$task = Register-ScheduledTask -TaskName $name -TaskPath $path -Principal $princ -Trigger $trigger -Action $action -Settings $settings
+				Write-Host -ForegroundColor green "$name task created ($($task.URI))."
+			} else {
+				Write-Host -ForegroundColor green "$name task already exists ($($task.URI))."
+			}
+		} catch {
+			Write-Host -ForegroundColor red "Unable to create $name task."
+		}
+	}
+	
+	return
+}
+
+
+################################################################################################################################################################
+# Exec
+################################################################################################################################################################
 Function Set-LockScreenImage {
 	param (
 		[Parameter(Mandatory)][string] $Path
