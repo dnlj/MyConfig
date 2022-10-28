@@ -60,7 +60,7 @@ $CDMFields = @(
 	"OemPreInstalledAppsEnabled",
 	"PreInstalledAppsEnabled",
 	"PreInstalledAppsEverEnabled"
-	#"RotatingLockScreenEnabled",
+	"RotatingLockScreenEnabled",
 	"RotatingLockScreenOverlayEnabled",
 	"SilentInstalledAppsEnabled",
 	"SlideshowEnabled",
@@ -69,6 +69,7 @@ $CDMFields = @(
 )
 
 $CloudContent = @(
+	"DisableWindowsSpotlightFeatures",
 	"DisableConsumerAccountStateContent", # Turn off cloud consumer account state content
 	"DisableCloudOptimizedContent", # Turn off cloud optimized content
 	"DisableSoftLanding", # Do not show Windows tips
@@ -838,8 +839,10 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Adv
 
 # OneDrive
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\OneDrive" -Name "PreventNetworkTrafficPreUserSignIn" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Type DWord -Value 1 # 1 = Disabled. Legacy setting from Windows 8.1 - See DisableFileSyncNGSC
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type DWord -Value 1 # 1 = Disabled. I think this is the one that actually matters. The others should depend on this.
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableLibrariesDefaultSaveToOneDrive" -Type DWord -Value 0 # 0 = Save locally
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableMeteredNetworkFileSync" -Type DWord -Value 0 # 0 = Block on all metered networks, 1 = Roaming
 
 # Handwriting Data
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\TabletPC" -Name "PreventHandwritingDataSharing" -Type DWord -Value 1
@@ -979,10 +982,6 @@ Set-Registry -Path "HKCU:\Software\Policies\Microsoft\Windows\Explorer" -Name "D
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Name "EnableFeeds" -Type DWord -Value 0
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2
 
-# GameDVR
-Set-Registry -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
-
 # Notifications
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.Suggested" -Name "Enabled" -Type DWord -Value 0
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" -Name "NOC_GLOBAL_SETTING_ALLOW_TOASTS_ABOVE_LOCK" -Type DWord -Value 0
@@ -999,6 +998,8 @@ Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Pus
 ################################################################################################################################################################
 # App Aliases
 ################################################################################################################################################################
+"Configuring app aliases"
+
 # Paint
 Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\mspaint.exe"
 Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\mspaint.exe"
@@ -1030,8 +1031,9 @@ Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Micr
 
 
 ################################################################################################################################################################
-# Performance
+# Performance / Game
 ################################################################################################################################################################
+"Configuring performance / game settings"
 # Disable fullscreen optimization to allow for true fullscreen.
 # Known to cause perf issues with some games when enabled (all values 0 = enabled)
 Set-Registry -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_DXGIHonorFSEWindowsCompatible" -Type DWord -Value 1
@@ -1052,10 +1054,16 @@ Set-Registry -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarE
 # I don't think there is any harm in just doing all of them though.
 Get-LocalUser | %{$_.SID.ToString()} | %{Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\InstallService\Stubification\$_" -Name "EnableAppOffloading" -Type DWord -Value 0}
 
+# GameDVR
+Set-Registry -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
+
 
 ################################################################################################################################################################
 # Power Settings
 ################################################################################################################################################################
+"Configuring power settings"
+
 # Disable hibernate
 Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabled" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabledDefault" -Type DWord -Value 0
