@@ -1278,6 +1278,12 @@ Set-Registry -Path "HKCR:\Directory\Background\shell\AnyCode" -Name "LegacyDisab
 Set-Registry -Path "HKCR:\Python.File\shell\Edit with IDLE" -Name "LegacyDisable" -Type String -Value ""
 Set-Registry -Path "HKCR:\Python.File\shell\editwithidle" -Name "LegacyDisable" -Type String -Value ""
 
+# Remove Sharing Context Menu Option ("Give access to")
+Get-ItemPropertyValue -ErrorAction SilentlyContinue -LiteralPath "HKCR:\*\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -LiteralPath "HKCR:\*\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
+Get-ItemPropertyValue -ErrorAction SilentlyContinue -Path "HKCR:\Directory\Background\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -Path "HKCR:\Directory\Background\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
+Get-ItemPropertyValue -ErrorAction SilentlyContinue -Path "HKCR:\Directory\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -Path "HKCR:\Directory\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
+Get-ItemPropertyValue -ErrorAction SilentlyContinue -Path "HKCR:\Drive\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -Path "HKCR:\Drive\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
+
 
 ################################################################################################################################################################
 # Keyboard Setting
