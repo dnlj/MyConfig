@@ -1068,7 +1068,7 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "Al
 Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabled" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\System\CurrentControlSet\Control\Power" -Name "HibernateEnabledDefault" -Type DWord -Value 0
 
-# Fast Boot
+# Fast Boot / Fast Startup
 Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name "HiberbootEnabled" -Type DWord -Value 0
 
 # TODO: configure power settings
@@ -1149,6 +1149,12 @@ foreach ($set in $ExplorerSettings) {
 
 # Disable search filtering
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "SafeSearchMode" -Type DWord -Value 0
+
+# Start menu
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "HideRecommendedSection" -Type DWord -Value 1 # Only works on Windows SE
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "HideRecentlyAddedApps" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoStartMenuMFUprogramsList" -Type DWord -Value 1 # Recently Used Programs
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "ShowOrHideMostUsedApps" -Type DWord -Value 2 # 2 = hide
 
 # Hide extra files
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowCloudFilesInQuickAccess" -Type DWord -Value 0

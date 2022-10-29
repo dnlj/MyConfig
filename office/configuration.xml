@@ -1,0 +1,36 @@
+<!-- https://learn.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options -->
+<!-- https://config.office.com/deploymentsettings -->
+<!--
+1. Download deployment tool: https://learn.microsoft.com/en-us/deployoffice/overview-office-deployment-tool
+2. Run (auto extract)
+3. setup.exe /download configuration.xml
+4. setup.exe /configure configuration.xml
+-->
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="Monthly">
+    <Product ID="O365ProPlusRetail">
+      <Language ID="en-us" />
+      <ExcludeApp ID="Access" />
+      <!-- <ExcludeApp ID="Excel" /> -->
+      <ExcludeApp ID="Groove" />
+      <ExcludeApp ID="InfoPath" />
+      <ExcludeApp ID="Lync" />
+      <ExcludeApp ID="OneDrive" />
+      <ExcludeApp ID="OneNote" />
+      <ExcludeApp ID="Outlook" />
+      <!-- <ExcludeApp ID="PowerPoint" /> -->
+      <ExcludeApp ID="Project" />
+      <ExcludeApp ID="Publisher" />
+      <ExcludeApp ID="SharePointDesigner" />
+      <ExcludeApp ID="Teams" />
+      <ExcludeApp ID="Visio" />
+      <!-- <ExcludeApp ID="Word" /> -->
+    </Product>
+    <!-- <Product ID="VisioProRetail"><Language ID="en-us" /></Product> -->
+  </Add>
+
+  <Display Level="None" AcceptEULA="TRUE" />
+  <!--  <Updates Enabled="TRUE" Channel="Monthly" /> -->
+  <!--  <Property Name="AUTOACTIVATE" Value="1" /> -->
+
+</Configuration>
