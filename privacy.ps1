@@ -102,7 +102,7 @@ Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudSto
 # Always include a trailing "*" to account for per-user services
 $ServicesDisables = @(
 	# General / Unsorted
-	($ModeSafe, "DoSvc*"), # Delivery Optimization
+	# ! DONT DISABLE ! ($ModeSafe, "DoSvc*"), # Delivery Optimization # DONT DISABLE: Breaks Windows Update, even if not using delivery optimization
 	($ModeSafe, "edgeupdate*"), # Edge update services
 	($ModeSafe, "MicrosoftEdgeElevationService*"),
 	($ModeSafe, "icssvc*"), # Windows Mobile Hotspot Service
@@ -622,7 +622,7 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Na
 # Maybe? i cant find any info on this setting, we already disasbled in in tasks section
 #Set-Register -Path "HKLM:\Software\Microsoft\WindowsUpdate\UX\Settings" -Name "UxOption" -Type DWord -Value 1
 
-# Peer to peer downloads
+# Peer to peer downloads (Delivery Optimization)
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -Type DWord -Value 0
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization" -Name "SystemSettingsDownloadMode" -Type DWord -Value 0
