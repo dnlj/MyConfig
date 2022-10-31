@@ -102,7 +102,7 @@ Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudSto
 # Always include a trailing "*" to account for per-user services
 $ServicesDisables = @(
 	# General / Unsorted
-	# ! DONT DISABLE ! ($ModeSafe, "DoSvc*"), # Delivery Optimization # DONT DISABLE: Breaks Windows Update, even if not using delivery optimization
+	# ! DONT DISABLE ! ($ModeSafe, "DoSvc*"), # Delivery Optimization # DONT DISABLE: Breaks Windows Update, even if not using delivery optimization.
 	($ModeSafe, "edgeupdate*"), # Edge update services
 	($ModeSafe, "MicrosoftEdgeElevationService*"),
 	($ModeSafe, "icssvc*"), # Windows Mobile Hotspot Service
@@ -122,7 +122,7 @@ $ServicesDisables = @(
 	($ModeAggr, "DevicePickerUserSvc*"),
 	($ModeAggr, "DeviceAssociationBrokerSvc*"),
 	($ModeSafe, "NPSMSvc*"), # Now playing session manager
-	($ModeSafe, "AppReadiness"), # App Readiness - Windows Store app install and setup
+	# ! DONT DISABLE ! ($ModeSafe, "AppReadiness"), # App Readiness - Windows Store app install and setup # DONT DISABLE: Breaks Windows Update.
 	($ModeAggr, "cbdhsvc*"), # Clipboard service - for enhanceed clipboard: history, device sharing, etc.
 	# ! DONT DISABLE ! ($ModeAggr,"TextInputManagementService*"), # DONT DISABLE: breaks keyboard input.
 	
@@ -1301,6 +1301,9 @@ Set-Registry -Path "HKCU:\Control Panel\Accessibility\Keyboard Response" -Name "
 
 Set-Registry -Path "HKCU:\Control Panel\Accessibility\StickyKeys" -Name "Flags" -Type String -Value "442"
 Set-Registry -Path "HKCU:\Control Panel\Accessibility\ToggleKeys" -Name "Flags" -Type String -Value "58"
+
+# Remap Capslock > Ctrl
+Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Type Binary -Value ([byte[]](0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x02,0x00,0x00,0x00,0x1d,0x00,0x3a,0x00,0x00,0x00,0x00,0x00))
 
 
 ################################################################################################################################################################
