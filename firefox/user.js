@@ -17,13 +17,17 @@ user_pref("extensions.pocket.enabled", false);
 user_pref("ui.osk.enabled", false); // On screen keyboard
 
 // User Interface
-user_pref("browser.theme.content-theme", 1);
+user_pref("browser.theme.content-theme", 1); // 0=dark, 1=light, 2=system, 3=browser
+user_pref("browser.theme.toolbar-theme", 1); // 0=dark, 1=light, 2=system, 3=browser
+user_pref("browser.theme.dark-private-windows", false); // Fix private browsing broken UI even with 100% vanilla fresh install (on fresh OS) no config/user.js/profile/etc.
 user_pref("browser.toolbars.bookmarks.visibility", "always");
 user_pref("browser.uidensity", 1);
 user_pref("browser.compactmode.show", true);
 user_pref("browser.privatebrowsing.enable-new-indicator", false); // Change top right private browser indicator just icon instead of huge label
+user_pref("browser.privatebrowsing.enable-new-logo", false);
 user_pref("browser.privateWindowSeparation.enabled", true); // Gives private windows a separate icon for alt-tab selection
 //user_pref("ui.prefersReducedMotion", 1);
+user_pref("ui.prefersReducedMotion", 0); // If not disabled explicitly disabled FireFox will try to use OS settings (which changes loading icon, don't care for it, whats the point of a loading icon if it doesn't move)
 
 // Downloads
 user_pref("browser.download.always_ask_before_handling_new_types", true);
@@ -170,6 +174,7 @@ user_pref("network.connectivity-service.enabled", false); // Connectivity checks
 user_pref("webgl.disabled", true);
 user_pref("dom.vr.process.enabled", false);
 //user_pref("media.peerconnection.enabled", false);
+user_pref("browser.privatebrowsing.vpnpromourl", ""); // Reduce ads in private browsing
 
 // Push API
 user_pref("dom.push.enabled", false);

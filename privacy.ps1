@@ -103,6 +103,7 @@ Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudSto
 $ServicesDisables = @(
 	# General / Unsorted
 	# ! DONT DISABLE ! ($ModeSafe, "DoSvc*"), # Delivery Optimization # DONT DISABLE: Breaks Windows Update, even if not using delivery optimization.
+	# ! DONT DISABLE ! ($ModeSafe, "msiserver*"), # Windows Installer # DONT DISABLE: Breaks Windows Store app installs
 	($ModeSafe, "edgeupdate*"), # Edge update services
 	($ModeSafe, "MicrosoftEdgeElevationService*"),
 	($ModeSafe, "icssvc*"), # Windows Mobile Hotspot Service
@@ -118,9 +119,9 @@ $ServicesDisables = @(
 	($ModeSafe, "OneSyncSvc*"), # Various syncing functionality
 	($ModeAggr, "UnistoreSvc*"), # User Data Storage
 	($ModeAggr, "UserDataSvc*"), # User Data Access
-	($ModeAggr, "DevicesFlowUserSvc*"),
-	($ModeAggr, "DevicePickerUserSvc*"),
-	($ModeAggr, "DeviceAssociationBrokerSvc*"),
+	# ! DONT DISABLE ! ($ModeAggr, "DevicesFlowUserSvc*"), # DONT DISABLE: Breaks Bluetooth
+	# ! DONT DISABLE ! ($ModeAggr, "DevicePickerUserSvc*"), # DONT DISABLE: Breaks Bluetooth
+	# ! DONT DISABLE ! ($ModeAggr, "DeviceAssociationBrokerSvc*"), # DONT DISABLE: Breaks Bluetooth
 	($ModeSafe, "NPSMSvc*"), # Now playing session manager
 	# ! DONT DISABLE ! ($ModeSafe, "AppReadiness"), # App Readiness - Windows Store app install and setup # DONT DISABLE: Breaks Windows Update.
 	($ModeAggr, "cbdhsvc*"), # Clipboard service - for enhanceed clipboard: history, device sharing, etc.
@@ -185,8 +186,11 @@ $ServicesDisables = @(
 	($ModeSafe, "SCPolicySvc*"), # Smart Card Removal Policy
 	($ModeSafe, "SEMgrSvc*"), # Payments and NFC/SE Manager
 	($ModeSafe, "WalletService*"), # Wallet Service
-	($ModeSafe, "CDPSvc*"), # Connected Devices Platform Service
-	($ModeSafe, "CDPUserSvc*"), # Connected Devices Platform User Service_4b694
+	
+	# WARNING: Does cause of intermittent logout issues: https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/issues/46
+	# You can still disable these and select end task manually, but its annoying.
+	#($ModeAggr, "CDPSvc*"), # Connected Devices Platform Service
+	#($ModeAggr, "CDPUserSvc*"), # Connected Devices Platform User Service_4b694
 
 	# Gaming
 	# Disabling some of these may break XInput and/or Windows.Gaming.Input
@@ -599,13 +603,13 @@ if ($ModeAggr) {
 	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ExcludeWUDriversInQualityUpdate" -Type DWord -Value 1
 }
 
-# Stability (these do not affect security updates)
+# Stability
 # See https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "BranchReadinessLevel" -Type DWord -Value 16 # 16 = Semi Annual
 if ($ModeAggr) {
-	# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgrade" -Type DWord -Value 1
-	# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgradePeriod" -Type DWord -Value 6 # Months
-	# DOES affect security updates: Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpdatePeriod" -Type DWord -Value 4 # Weeks
+	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgrade" -Type DWord -Value 1
+	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgradePeriod" -Type DWord -Value 6 # Months
+	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpdatePeriod" -Type DWord -Value 4 # Weeks
 }
 
 # Quality Updates
@@ -1146,6 +1150,27 @@ $ExplorerSettings = @(
 foreach ($set in $ExplorerSettings) {
 	Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name $set.Name -Type DWord -Value $set.Val
 }
+
+# Disable Language Switching Hotkeys
+# Yes, these are strings not dword.
+Set-Registry -Path "HKCU:\Keyboard Layout\Toggle" -Name "Language Hotkey" -Type String -Value "3" # 3=Disabled
+Set-Registry -Path "HKCU:\Keyboard Layout\Toggle" -Name "Layout Hotkey" -Type String -Value "3" # 3=Disabled
+Set-Registry -Path "HKCU:\Keyboard Layout\Toggle" -Name "Hotkey" -Type String -Value "3" # 3=Disabled
+
+# Language Bar
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\ShowStatus" -Type DWord -Value 3 # 0=floating, 3=hidden, 4=docked
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\Transparency" -Type DWord -Value 255
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\Label" -Type DWord -Value 1
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\ExtraIconsOnMinimized" -Type DWord -Value 0
+
+# Snap Settings
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "EnableSnapAssistFlyout" -Type DWord -Value 0 # When hovering min/max button
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "EnableSnapBar" -Type DWord -Value 0 # At top center of screen
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "EnableTaskGroups" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "DITest" -Type DWord -Value 0 # Snap border size
+
+# Don't show individual Edge tabs in alt+tab menu
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MultiTaskingAltTabFilter" -Type DWord -Value 3 # (0=all, 1=5, 2=3, 3=disabled)
 
 # Disable search filtering
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "SafeSearchMode" -Type DWord -Value 0

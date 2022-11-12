@@ -102,7 +102,7 @@ $apps = @(
 	#"Microsoft.VP9VideoExtensions",
 	#"Microsoft.WebMediaExtensions",
 	#"Microsoft.WebpImageExtension",
-	#"Microsoft.Windows.Photos",
+	#"Microsoft.Windows.Photos", # TODO: disable once we have alternative
 	"Microsoft.WindowsAlarms",
 	#"Microsoft.WindowsCalculator",
 	#"Microsoft.WindowsCamera",
@@ -121,6 +121,7 @@ $apps = @(
 	"Microsoft.YourPhone",
 	"Microsoft.ZuneMusic",
 	"Microsoft.ZuneVideo",
+	"MicrosoftCorporationII.MicrosoftFamily",
 	"MicrosoftCorporationII.QuickAssist",
 	"MicrosoftTeams",
 	"MicrosoftWindows.Client.WebExperience"
