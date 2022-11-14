@@ -106,14 +106,14 @@ $ServicesDisables = @(
 	# ! DONT DISABLE ! ($ModeSafe, "msiserver*"), # Windows Installer # DONT DISABLE: Breaks Windows Store app installs
 	($ModeSafe, "edgeupdate*"), # Edge update services
 	($ModeSafe, "MicrosoftEdgeElevationService*"),
-	($ModeSafe, "icssvc*"), # Windows Mobile Hotspot Service
+	($ModeNorm, "icssvc*"), # Windows Mobile Hotspot Service
 	($ModeAggr, "InstallService*"), # Microsoft Store Install Service
 	($ModeAggr, "InventorySvc*"), # Inventory and Compatibility Appraisal service
 	#($ModeAggr, "P9RdrService*"), # Plan 9 File Server - Part of WSL
 	($ModeSafe, "MapsBroker*"), # Downloaded Maps Manager
 	($ModeSafe, "PimIndexMaintenanceSvc*"), # Contact Data indexing
 	($ModeSafe, "RetailDemo*"), # Retail Demo Service
-	($ModeSafe, "WbioSrvc*"), # Windows Biometric Service
+	($ModeNorm, "WbioSrvc*"), # Windows Biometric Service
 	($ModeSafe, "WMPNetworkSvc*"), # Windows Media Player Network Sharing Service
 	($ModeSafe, "workfolderssvc*"), # Work Folders
 	($ModeSafe, "OneSyncSvc*"), # Various syncing functionality
@@ -134,8 +134,8 @@ $ServicesDisables = @(
 	($ModeSafe, "SSDPSRV"), # SSDP Discovery - Simple Search and Discovery Protocol
 	($ModeSafe, "lfsvc"), # Geolocation Service
 	($ModeSafe, "AJRouter*"), # AllJoyn Router Service - IoT stuff - https://en.wikipedia.org/wiki/AllJoyn
-	($ModeSafe, "HomeGroup*"), # Multiple homegroup related services
-	($ModeSafe, "SharedAccess*"), # Internet Connection Sharing (ICS)
+	($ModeNorm, "HomeGroup*"), # Multiple homegroup related services
+	($ModeNorm, "SharedAccess*"), # Internet Connection Sharing (ICS)
 	($ModeSafe, "diagnosticshub.standardcollector.service*"), # Microsoft (R) Diagnostics Hub Standard Collector Service
 	($ModeSafe, "diagsvc"), # Diagnostic Execution Service
 	($ModeSafe, "DiagTrack"), # Connected User Experiences and Telemetry
@@ -173,7 +173,7 @@ $ServicesDisables = @(
 	($ModeSafe, "WinRM*"), # Windows Remote Management (WS-Management)
 	($ModeSafe, "DmEnrollmentSvc*"), # Device Management Enrollment Service
 	($ModeSafe, "dmwappushservice*"), # Device Management Wireless Application Protocol (WAP) Push message Routing Service dmwappushservice
-	($ModeSafe, "LanmanWorkstation*"), # Network file sharing, SMB protocol
+	($ModeNorm, "LanmanWorkstation*"), # Network file sharing, SMB protocol
 
 	# Printers
 	($ModeAggr, "PrintNotify*"), # Printer Extensions and Notifications
@@ -247,13 +247,13 @@ foreach ($rule in $ServicesDisables) {
 $TaskDisables = @(
 	($ModeSafe, "*MicrosoftEdge*"),
 	($ModeSafe, "*OneDrive*"),
-	($ModeSafe, "\Microsoft\Windows\Feedback\Siuf\DmClient*"), # Device management
+	($ModeNorm, "\Microsoft\Windows\Feedback\Siuf\DmClient*"), # Device management
 	#($ModeSafe, "WinSAT"), # Measures a system's performance and capabilities
 	($ModeSafe, "\Microsoft\Windows\Management\Provisioning\Cellular"), # SIM integration
 	($ModeSafe, "\Microsoft\Windows\Maps\Maps*"),
-	($ModeSafe, "\Microsoft*WiFiTask"), # Background task for performing per user and web interactions
-	($ModeSafe, "\Microsoft\Windows\Offline Files\Background Synchronization"), # This task controls periodic background synchronization of Offline Files when the user is working in an offline mode.
-	($ModeSafe, "\Microsoft\Windows\Offline Files\Logon Synchronization"), # This task initiates synchronization of Offline Files when a user logs onto the system.
+	($ModeNorm, "\Microsoft*WiFiTask"), # Background task for performing per user and web interactions
+	($ModeNorm, "\Microsoft\Windows\Offline Files\Background Synchronization"), # This task controls periodic background synchronization of Offline Files when the user is working in an offline mode.
+	($ModeNorm, "\Microsoft\Windows\Offline Files\Logon Synchronization"), # This task initiates synchronization of Offline Files when a user logs onto the system.
 	($ModeSafe, "\Microsoft\Windows\Printing\EduPrintProv"),
 	($ModeSafe, "\Microsoft\Windows\RemoteAssistance*"), # Checks group policy for changes relevant to Remote Assistance
 	($ModeSafe, "\Microsoft\Windows\Work Folders*"),
@@ -312,23 +312,37 @@ Disable-TasksLike $TaskDisables
 # Get-NetFirewallRule | Format-Table DisplayName, Group, DisplayGroup, Description -AutoSize
 $FirewallDisables = @(
 	# Specific apps
-	($ModeSafe, "Cortana"),
-	($ModeSafe, "Feedback Hub"),
-	($ModeSafe, "Get Help"),
-	($ModeSafe, "Microsoft family features"),
-	($ModeSafe, "Microsoft Tips"),
-	($ModeSafe, "Microsoft People"),
-	($ModeSafe, "Microsoft Photos"),
-	($ModeSafe, "Microsoft Teams"),
-	($ModeSafe, "Microsoft To Do"),
-	($ModeSafe, "Microsoft Content"),
-	($ModeSafe, "Movies & TV"),
-	($ModeSafe, "MSN Weather"),
-	($ModeSafe, "Take a test"),
-	($ModeSafe, "Windows Calculator"),
-	($ModeSafe, "Windows Camera"),
-	($ModeSafe, "Windows Media Player"),
-	($ModeSafe, "*Solitaire*"),
+	($ModeNorm, "*Cortana*"),
+	($ModeNorm, "*Feedback Hub*"),
+	($ModeAggr, "*Get Help*"),
+	($ModeNorm, "*Microsoft family features*"),
+	($ModeNorm, "*Microsoft Tips*"),
+	($ModeNorm, "*Microsoft People*"),
+	($ModeNorm, "*Microsoft Photos*"),
+	($ModeNorm, "*Microsoft Teams*"),
+	($ModeNorm, "*Microsoft To Do*"),
+	($ModeNorm, "*Microsoft Content*"),
+	($ModeNorm, "*Movies & TV*"),
+	($ModeNorm, "*MSN Weather*"),
+	($ModeNorm, "*Take a test*"),
+	($ModeNorm, "*Windows Calculator*"),
+	($ModeNorm, "*Windows Camera*"),
+	($ModeNorm, "*Windows Media Player*"),
+	($ModeNorm, "*Solitaire*"),
+	
+	# Some apps also have rules for appid instead of just name
+	($ModeNorm, "*Microsoft.Getstarted*"),
+	($ModeNorm, "*Microsoft.XboxIdentityProvider*"),
+	($ModeNorm, "*Microsoft.ZuneMusic*"),
+	($ModeNorm, "*microsoft.windowscommunicationsapps*"),
+	($ModeNorm, "*Microsoft.Todos*"),
+	($ModeNorm, "*Microsoft.ZuneVideo*"),
+	($ModeNorm, "*Microsoft.XboxGamingOverlay*"),
+	($ModeNorm, "*Microsoft.WindowsTerminal*"),
+	($ModeAggr, "*Microsoft.WindowsFeedbackHub*"),
+	($ModeAggr, "*Microsoft.StorePurchaseApp*"),
+	($ModeNorm, "*Microsoft.People*"),
+	($ModeNorm, "*Microsoft.GetHelp*"),
 
 	# Wild cards
 	($ModeSafe, "*Delivery Optimization*"),
@@ -396,7 +410,7 @@ Remove-Registry -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Nam
 
 
 ################################################################################################################################################################
-# App Perm
+# App Perms
 ################################################################################################################################################################
 "Configuring app permisions..."
 
@@ -436,6 +450,7 @@ $AppPerm_UserChoice = @(
 )
 
 foreach ($perm in $AppPerm_UserChoice) {
+	# HKLM here is for the global enable/disable. Users CAN still specify own prefs.
 	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\$perm" -Name "Value" -Type String -Value "Deny"
 	Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\$perm" -Name "Value" -Type String -Value "Deny"
 }
@@ -949,12 +964,13 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Maps" -Name "AutoD
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Maps" -Name "AllowUntriggeredNetworkTrafficOnSettingsPage" -Type DWord -Value 0
 
 # Location services and sensors
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocation" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableWindowsLocationProvider" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocationScripting" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableSensors" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\System\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 0
-Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value 0
+# Controlled with app permissions (see section "App Perms")
+#Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocation" -Type DWord -Value 1
+#Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableWindowsLocationProvider" -Type DWord -Value 1
+#Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocationScripting" -Type DWord -Value 1
+#Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableSensors" -Type DWord -Value 1
+#Set-Registry -Path "HKLM:\System\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 0
+#Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value 0
 
 # Input personalization
 Set-Registry -Path "HKCU:\Software\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Type DWord -Value 0
@@ -1158,10 +1174,10 @@ Set-Registry -Path "HKCU:\Keyboard Layout\Toggle" -Name "Layout Hotkey" -Type St
 Set-Registry -Path "HKCU:\Keyboard Layout\Toggle" -Name "Hotkey" -Type String -Value "3" # 3=Disabled
 
 # Language Bar
-Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\ShowStatus" -Type DWord -Value 3 # 0=floating, 3=hidden, 4=docked
-Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\Transparency" -Type DWord -Value 255
-Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\Label" -Type DWord -Value 1
-Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar\ExtraIconsOnMinimized" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar" -Name "ShowStatus" -Type DWord -Value 3 # 0=floating, 3=hidden, 4=docked
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar" -Name "Transparency" -Type DWord -Value 255
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar" -Name "Label" -Type DWord -Value 1
+Set-Registry -Path "HKCU:\Software\Microsoft\CTF\LangBar" -Name "ExtraIconsOnMinimized" -Type DWord -Value 0
 
 # Snap Settings
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "EnableSnapAssistFlyout" -Type DWord -Value 0 # When hovering min/max button
