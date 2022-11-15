@@ -31,12 +31,12 @@ if (Find-Firefox) {
 } else {
 	"Installing Firefox..."
 	& {
-		$found = Get-ChildItem -Path "./downloads/Firefox Setup*.exe"
+		$found = Get-ChildItem -Path "./downloads/Firefox Setup*.exe" -ErrorAction SilentlyContinue
 		if (!$found) {
 			Download -Dir "./downloads" -Url "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US"
 		}
 
-		$found = Get-ChildItem -Path "./downloads/Firefox Setup*.exe"
+		$found = Get-ChildItem -Path "./downloads/Firefox Setup*.exe" -ErrorAction SilentlyContinue
 		if ((!$found) -or ($found.Length -le 10mb)) {
 			Write-Host -ForegroundColor red "Incorrect version of Firefox downloaded (stub or msi)."
 		}
@@ -206,21 +206,26 @@ if ($ff = Find-Firefox) {
 ################################################################################################################################################################
 # We have to launch FireFox to get it to create its scheduled tasks
 if ($installed -and $ff) {
-	& $ff "about:preferences" "https://drive.google.com/drive/my-drive" "https://github.com/dnlj/UserTweaks"
-
-	Start-Sleep -Seconds 3
+	
+	& $ff "-headless"
+	"Waiting of Firefox initial setup."
+	Start-Sleep -Seconds 10 # Wait for initial load, setup, task creation, extensions, etc.
+	
 	for ($i = 1; $i -le 10; $i++) {
 		$found = Get-ScheduledTask | Where URI -Like "\Mozilla\*"
 		if ($found) { break }
 		Start-Sleep -Seconds 3
-		"Waiting on FireFox scheduled tasks ($i/10)..."
+		"Waiting on Firefox scheduled tasks ($i/10)..."
 	}
-
+	
 	if ($i -eq 11) {
-		Write-Host -ForegroundColor red "Unable to find FireFox scheduled tasks. Did FireFox launch? Check Task Scheduler."
+		Write-Host -ForegroundColor red "Unable to find Firefox scheduled tasks. Did Firefox launch? Check Task Scheduler."
 	} else {
 		Disable-TasksLike "\Mozilla\*"
 	}
+	
+	Stop-Process -Name firefox -ErrorAction SilentlyContinue
+	& $ff "about:preferences" "https://drive.google.com/drive/my-drive" "https://github.com/dnlj/UserTweaks"
 }
 
 # https://www.stigviewer.com/stig/mozilla_firefox/
