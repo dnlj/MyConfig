@@ -187,11 +187,9 @@ $ServicesDisables = @(
 	($ModeSafe, "SEMgrSvc*"), # Payments and NFC/SE Manager
 	($ModeSafe, "WalletService*"), # Wallet Service
 	
-	# WARNING: Does cause of intermittent logout issues: https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/issues/46
-	# TODO: after more testing, this doesnt seem to fix the issue? look into more.
-	# You can still disable these and select end task manually, but its annoying.
-	#($ModeAggr, "CDPSvc*"), # Connected Devices Platform Service
-	#($ModeAggr, "CDPUserSvc*"), # Connected Devices Platform User Service_4b694
+	# Seem to be related to settings sync between multiple devices (CDP = Connected Devices Platform)
+	($ModeSafe, "CDPSvc*"), # Connected Devices Platform Service
+	($ModeSafe, "CDPUserSvc*"), # Connected Devices Platform User Service_4b694
 
 	# Gaming
 	# Disabling some of these may break XInput and/or Windows.Gaming.Input
@@ -253,8 +251,6 @@ $TaskDisables = @(
 	($ModeSafe, "\Microsoft\Windows\Management\Provisioning\Cellular"), # SIM integration
 	($ModeSafe, "\Microsoft\Windows\Maps\Maps*"),
 	($ModeNorm, "\Microsoft*WiFiTask"), # Background task for performing per user and web interactions
-	($ModeNorm, "\Microsoft\Windows\Offline Files\Background Synchronization"), # This task controls periodic background synchronization of Offline Files when the user is working in an offline mode.
-	($ModeNorm, "\Microsoft\Windows\Offline Files\Logon Synchronization"), # This task initiates synchronization of Offline Files when a user logs onto the system.
 	($ModeSafe, "\Microsoft\Windows\Printing\EduPrintProv"),
 	($ModeSafe, "\Microsoft\Windows\RemoteAssistance*"), # Checks group policy for changes relevant to Remote Assistance
 	($ModeSafe, "\Microsoft\Windows\Work Folders*"),
@@ -262,9 +258,13 @@ $TaskDisables = @(
 	($ModeSafe, "\Microsoft\XblGameSave\XblGameSaveTask"),
 	($ModeSafe, "\Microsoft\Windows\WwanSvc\NotificationTask"), # Background task for performing per user and web interactions
 	($ModeSafe, "\Microsoft\Windows\Application Experience\StartupAppTask"), # Scans startup entries and raises notification to the user if there are too many startup entries.
-	($ModeSafe, "\Microsoft\Windows\WindowsUpdate\Scheduled Start"), # This task is used to start the Windows Update service when needed to perform scheduled operations such as scans.
 	($ModeSafe, "\Microsoft\Windows\PushToInstall\Registration"), # Push to install stuff
-
+	
+	# Sync tasks
+	($ModeNorm, "\Microsoft\Windows\Offline Files\Background Synchronization"), # This task controls periodic background synchronization of Offline Files when the user is working in an offline mode.
+	($ModeNorm, "\Microsoft\Windows\Offline Files\Logon Synchronization"), # This task initiates synchronization of Offline Files when a user logs onto the system.
+	($ModeNorm, "\Microsoft\Windows\International\Synchronize Language Settings"), # Synchronize User Language Settings from other devices. NOTE: If you do not disable this task and have settings sync enabled it will hang when trying to log off.
+	
 	# Customer Experience Program
 	# Get-ScheduledTask | Where Description -Like "*Customer Experience*"),
 	($ModeSafe, "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"), # If the user has consented to participate in the Windows Customer Experience Improvement Program, this job collects and sends usage data to Microsoft.
@@ -289,6 +289,7 @@ $TaskDisables = @(
 	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\Schedule Work"),
 	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker"), # Forces rebooot after update
 	($ModeSafe, "\Microsoft\Windows\UpdateOrchestrator\UUS Failover Task"),
+	($ModeSafe, "\Microsoft\Windows\WindowsUpdate\Scheduled Start"), # This task is used to start the Windows Update service when needed to perform scheduled operations such as scans.
 
 	# Out of box experience
 	# Get-ScheduledTask | Where URI -like "*oobe*"),
