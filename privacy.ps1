@@ -10,11 +10,21 @@ Set-Variable -Option Constant -Name "ModeAggr" -Value ($Mode -eq "Aggressive")
 Set-Variable -Option Constant -Name "ModeNorm" -Value ($ModeAggr -or ($Mode -eq "Normal"))
 Set-Variable -Option Constant -Name "ModeSafe" -Value ($ModeNorm -or ($Mode -eq "Safe"))
 
+$WinVer = @()
+$WinVer += if ((Get-CimInstance Win32_OperatingSystem).Caption.Contains('Windows 10')) {10} else {0}
+$WinVer += if ((Get-CimInstance Win32_OperatingSystem).Caption.Contains('Windows 11')) {11} else {0}
+$WinVer = $WinVer | ? {$_ -ne 0}
+
+if ($WinVer.count -eq 0) {
+	Write-Host -ForegroundColor red "Unknown Windows version. Aborting."
+	return
+}
+
 . .\helpers.ps1
 
 try { $null = Stop-Transcript } catch {}
 Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.settings.$(Get-Date -F yyyyMMddTHHmmssffff).log"
-
+"Running in mode $Mode for Windows $WinVer"
 $StartTime = Get-Date
 
 ################################################################################################################################################################
@@ -331,6 +341,10 @@ $FirewallDisables = @(
 	($ModeNorm, "*Windows Camera*"),
 	($ModeNorm, "*Windows Media Player*"),
 	($ModeNorm, "*Solitaire*"),
+	($ModeNorm, "*Skype*"),
+	($ModeNorm, "*OneNote*"),
+	($ModeNorm, "*Mixed Reality Portal*"),
+	($ModeNorm, "*3D Viewer*"),
 	
 	# Some apps also have rules for appid instead of just name
 	($ModeNorm, "*Microsoft.Getstarted*"),
@@ -966,6 +980,9 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" -Name "Enabled" -Type DWord -Value 0
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" -Name "Enabled" -Type DWord -Value 0
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" -Name "Enabled" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\AppSync" -Name "Enabled" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\StartLayout" -Name "Enabled" -Type DWord -Value 0
+Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\PackageState" -Name "Enabled" -Type DWord -Value 0
 
 # Feedback Reminders
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -Type DWord -Value 1
@@ -1044,18 +1061,20 @@ Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Pa
 Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\notepad.exe"
 
 # Restore fast notepad (system32/notepad.exe)
-Get-WindowsCapability -Online | ? Name -Like '*Notepad*' | Add-WindowsCapability -Online
-Remove-AppxPackageThorough -Name "Microsoft.WindowsNotepad" # Remove UWP version of notepad
-Set-Registry -Path "HKCU:\Software\Microsoft\Notepad" -Name "ShowStoreBanner" -Type DWord -Value 0 # Disable the "Notepad has an update, click here to launch"
-Remove-Registry -Path "HKCR:\Applications\notepad.exe" -Name "NoOpenWith" # Allow in "Open With" dialog.
-Remove-RegistryKey -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe" # Remove some overrides
-Set-Registry -Path "HKCR:\txtfilelegacy\DefaultIcon" -Name "(Default)" -Type String -Value "imageres.dll,-102"
-Set-Registry -Path "HKCR:\txtfilelegacy\shell\open\command" -Name "(Default)" -Type String -Value 'C:\Windows\System32\notepad.exe "%1"'
-New-Shortcut -Path "$env:USERPROFILE\Favorites\Notepad.lnk" -Target "C:\Windows\System32\notepad.exe" -Args "" # Add a link in an indexable location (or else it wont show up in Windows Search)
+if ($WinVer -ge 11) {
+	Get-WindowsCapability -Online | ? Name -Like '*Notepad*' | Add-WindowsCapability -Online
+	Remove-AppxPackageThorough -Name "Microsoft.WindowsNotepad" # Remove UWP version of notepad
+	Set-Registry -Path "HKCU:\Software\Microsoft\Notepad" -Name "ShowStoreBanner" -Type DWord -Value 0 # Disable the "Notepad has an update, click here to launch"
+	Remove-Registry -Path "HKCR:\Applications\notepad.exe" -Name "NoOpenWith" # Allow in "Open With" dialog.
+	Remove-RegistryKey -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe" # Remove some overrides
+	Set-Registry -Path "HKCR:\txtfilelegacy\DefaultIcon" -Name "(Default)" -Type String -Value "imageres.dll,-102"
+	Set-Registry -Path "HKCR:\txtfilelegacy\shell\open\command" -Name "(Default)" -Type String -Value 'C:\Windows\System32\notepad.exe "%1"'
+	New-Shortcut -Path "$env:USERPROFILE\Favorites\Notepad.lnk" -Target "C:\Windows\System32\notepad.exe" -Args "" # Add a link in an indexable location (or else it wont show up in Windows Search)
 
-# Add text document back to new menu
-Set-Registry -Path "HKCR:\.txt\ShellNew" -Name "NullFile" -Type String -Value ""
-Set-Registry -Path "HKCR:\txtfilelegacy" -Name "(Default)" -Type String -Value "Text Document"
+	# Add text document back to new menu
+	Set-Registry -Path "HKCR:\.txt\ShellNew" -Name "NullFile" -Type String -Value ""
+	Set-Registry -Path "HKCR:\txtfilelegacy" -Name "(Default)" -Type String -Value "Text Document"
+}
 
 # Fake python (opens ms-store)
 Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\python.exe"
@@ -1314,9 +1333,11 @@ Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b2_powershell" -Name "
 Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b2_powershell\command" -Name "(Default)" -Type String -Value "powershell.exe -NoExit -Command Set-Location -LiteralPath '%V'"
 
 # WSL
-Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "(Default)" -Type String -Value "Open WSL terminal here"
-Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "Icon" -Type String -Value "wsl.exe"
-Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl\command" -Name "(Default)" -Type String -Value "wsl.exe --cd `"%v`""
+if ($ModeNorm) {
+	Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "(Default)" -Type String -Value "Open WSL terminal here"
+	Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "Icon" -Type String -Value "wsl.exe"
+	Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl\command" -Name "(Default)" -Type String -Value "wsl.exe --cd `"%v`""
+}
 
 # Git Bash
 #Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b4_git_shell" -Name "(Default)" -Type String -Value "Open git bash here"

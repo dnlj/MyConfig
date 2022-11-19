@@ -124,6 +124,13 @@ $apps = @(
 	"MicrosoftCorporationII.MicrosoftFamily",
 	"MicrosoftCorporationII.QuickAssist",
 	"MicrosoftTeams",
+	"Microsoft.Microsoft3DViewer*",
+	"Microsoft.MixedReality*",
+	"Microsoft.MSPaint", # 3D Paint
+	"Microsoft.Office.OneNote",
+	"Microsoft.SkypeApp",
+	"Microsoft.Wallet",
+	"Microsoft.XboxApp",
 	"MicrosoftWindows.Client.WebExperience"
 )
 

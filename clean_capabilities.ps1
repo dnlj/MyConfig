@@ -9,6 +9,7 @@ Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.clean_capabilities.$(Get-Dat
 # Get-WindowsCapability -Online | Where State -EQ "Installed" | Select Name
 $CapabilityDisables = @(
 	"App.StepsRecorder*",
+	"App.Support.QuickAssist*",
 	"*InternetExplorer*",
 	"*Hello.Face*",
 	#"Language.Basic*"

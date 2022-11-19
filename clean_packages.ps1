@@ -24,6 +24,7 @@ $PackageDisables = @(
 	#"Microsoft-Windows-Printing-PMCPPC*",
 	"Microsoft-Windows-StepsRecorder*",
 	"Microsoft-Windows-TabletPCMath*",
+	"Microsoft-Windows-QuickAssist",
 	#"Microsoft-Windows-Wallpaper-Content-Extended*",
 	"Microsoft-Windows-WordPad*"
 	#"OpenSSH-Client*",
