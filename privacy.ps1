@@ -1044,6 +1044,7 @@ Remove-RegistryKey -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\App Pa
 Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Microsoft\WindowsApps\notepad.exe"
 
 # Restore fast notepad (system32/notepad.exe)
+Get-WindowsCapability -Online | ? Name -Like '*Notepad*' | Add-WindowsCapability -Online
 Remove-AppxPackageThorough -Name "Microsoft.WindowsNotepad" # Remove UWP version of notepad
 Set-Registry -Path "HKCU:\Software\Microsoft\Notepad" -Name "ShowStoreBanner" -Type DWord -Value 0 # Disable the "Notepad has an update, click here to launch"
 Remove-Registry -Path "HKCR:\Applications\notepad.exe" -Name "NoOpenWith" # Allow in "Open With" dialog.

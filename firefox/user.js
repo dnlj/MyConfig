@@ -16,6 +16,30 @@ user_pref("layout.spellcheckDefault", 0);
 user_pref("extensions.pocket.enabled", false);
 user_pref("ui.osk.enabled", false); // On screen keyboard
 
+// Disable disk cache, we have RAM.
+// You can instead move to a diff drive if you want with: browser.cache.disk.parent_directory
+// about:cache
+//
+// Even with disk cache disabled Firefox still likes to buffer media to disk (YouTube, Twitch, etc.)
+// In private windows we have `forceMediaMemoryCache`, but there isn't an option for normal windows.
+//
+// One option would be to put your profile folder on a ram disk, but then you have to deal with those repercussions.
+// https://wiki.archlinux.org/title/Firefox/Profile_on_RAM
+// https://wiki.archlinux.org/title/profile-sync-daemon
+//
+user_pref("browser.cache.disk.enable", false);
+user_pref("browser.cache.disk_cache_ssl", false);
+user_pref("browser.cache.memory.enable", true);
+user_pref("browser.cache.memory.capacity", 1024*1024); // In KB: http://kb.mozillazine.org/Browser.cache.memory.capacity
+user_pref("browser.cache.memory.max_entry_size", 50*1024); // In KB
+user_pref("browser.privatebrowsing.forceMediaMemoryCache", true);
+
+// Session restore, high disk usage.
+// https://www.servethehome.com/firefox-is-eating-your-ssd-here-is-how-to-fix-it/
+// http://kb.mozillazine.org/Browser.sessionstore.interval
+user_pref("browser.sessionstore.interval", 5*60*1000); // Time in MS
+user_pref("browser.sessionstore.interval.idle", 10*60*1000); // Time in MS
+
 // User Interface
 user_pref("browser.theme.content-theme", 1); // 0=dark, 1=light, 2=system, 3=browser
 user_pref("browser.theme.toolbar-theme", 1); // 0=dark, 1=light, 2=system, 3=browser
