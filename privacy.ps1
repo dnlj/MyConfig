@@ -188,6 +188,7 @@ $ServicesDisables = @(
 	($ModeSafe, "WalletService*"), # Wallet Service
 	
 	# WARNING: Does cause of intermittent logout issues: https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/issues/46
+	# TODO: after more testing, this doesnt seem to fix the issue? look into more.
 	# You can still disable these and select end task manually, but its annoying.
 	#($ModeAggr, "CDPSvc*"), # Connected Devices Platform Service
 	#($ModeAggr, "CDPUserSvc*"), # Connected Devices Platform User Service_4b694
@@ -500,6 +501,20 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAc
 # See also: $FirewallDisables
 ################################################################################################################################################################
 "Configuring security settings..."
+
+# Disable local account security questions
+# 0 or missing = Recovery questions enabled (default, missing)
+# 1 = Recovery questions disabled
+if ($ModeAggr) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "NoLocalPasswordResetQuestions" -Type DWord -Value 1
+}
+
+# Disable reveal button in password fields
+# 0 or missing = Reveal button is shown (default)
+# 1 = Reveal button not shown
+if ($ModeAggr) {
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredUI" -Name "DisablePasswordReveal" -Type DWord -Value 1
+}
 
 # Disable administrative shares
 Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareServer" -Type DWord -Value 0
@@ -913,9 +928,6 @@ if ($ModeNorm) {
 	Set-Registry -Path "HKCU:\Software\Microsoft\Clipboard" -Name "EnableClipboardHistory" -Type DWord -Value 0
 	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowCrossDeviceClipboard" -Type DWord -Value 0
 }
-
-# Password Reveal
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredUI" -Name "DisablePasswordReveal" -Type DWord -Value 1
 
 # Disable "Steps Recorder" - Used for diagnostics and such
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableUAR" -Type DWord -Value 1
