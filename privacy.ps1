@@ -609,7 +609,7 @@ if ($ModeAggr) {&{
 		$full = Join-Path $path $name
 
 		$action = New-ScheduledTaskAction -Execute "%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Argument "-SignatureUpdate"
-		$settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -StartWhenAvailable -MultipleInstances IgnoreNew -DontStopIfGoingOnBatteries
+		$settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -StartWhenAvailable -MultipleInstances IgnoreNew -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 10)
 		$trigger = New-ScheduledTaskTrigger -AtLogOn
 		$trigger.Delay = 'PT90S'
 		$trigger.Repetition = New-CimInstance -ClientOnly -ClassName "MSFT_TaskRepetitionPattern" -Namespace "Root/Microsoft/Windows/TaskScheduler"`
