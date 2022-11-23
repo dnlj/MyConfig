@@ -23,7 +23,7 @@ if ($WinVer.count -eq 0) {
 . .\helpers.ps1
 
 try { $null = Stop-Transcript } catch {}
-Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.settings.$(Get-Date -F yyyyMMddTHHmmssffff).log"
+Start-Transcript -Append -Path "C:\.dnlj\logs\.dnlj.settings.$(Get-Date -F yyyyMMddTHHmmssffff).log"
 "Running in mode $Mode for Windows $WinVer"
 $StartTime = Get-Date
 
@@ -420,6 +420,7 @@ foreach ($rule in $FirewallDisables) {
 ################################################################################################################################################################
 # Startup / Autorun
 ################################################################################################################################################################
+"Configuring startup and autorun..."
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" -Name "OneDrive" -Type Binary -Value 0
 Remove-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "OneDrive"
 Remove-Registry -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "OneDrive"
@@ -1062,7 +1063,7 @@ Remove-Item -Force -ErrorAction SilentlyContinue -Path "${env:LOCALAPPDATA}\Micr
 
 # Restore fast notepad (system32/notepad.exe)
 if ($WinVer -ge 11) {
-	Get-WindowsCapability -Online | ? Name -Like '*Notepad*' | Add-WindowsCapability -Online
+	$null = Get-WindowsCapability -Online | ? Name -Like '*Notepad*' | Add-WindowsCapability -Online
 	Remove-AppxPackageThorough -Name "Microsoft.WindowsNotepad" # Remove UWP version of notepad
 	Set-Registry -Path "HKCU:\Software\Microsoft\Notepad" -Name "ShowStoreBanner" -Type DWord -Value 0 # Disable the "Notepad has an update, click here to launch"
 	Remove-Registry -Path "HKCR:\Applications\notepad.exe" -Name "NoOpenWith" # Allow in "Open With" dialog.
@@ -1183,7 +1184,7 @@ $ExplorerSettings = @(
 
 	# Explorer
 	@{Name="DontPrettyPath";        Val=1}, # Show true file case
-	@{Name="Hidden";                Val=1}, # Hidden files and foldrs
+	@{Name="Hidden";                Val=+$ModeAggr}, # Hidden files and foldrs
 	@{Name="ShowSuperHidden";       Val=0}, # Protected Operating System files - leave this of or you get desktop.ini all over the place
 	@{Name="HideFileExt";           Val=0}, # File extensions
 	@{Name="HideDrivesWithNoMedia"; Val=0}, # Show/Hide empty drives

@@ -2,7 +2,7 @@
 . .\helpers.ps1
 
 try { $null = Stop-Transcript } catch {}
-Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.clean_programs.$(Get-Date -F yyyyMMddTHHmmssffff).log"
+Start-Transcript -Append -Path "C:\.dnlj\logs\.dnlj.clean_programs.$(Get-Date -F yyyyMMddTHHmmssffff).log"
 
 # Default apps: `Get-AppxPackage -AllUsers | Format-Table Name, PublishedId -AutoSize`
 # Provisioned Apps: `Get-AppxProvisionedPackage -Online | Format-Table DisplayName, PackageName -AutoSize`

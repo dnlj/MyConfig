@@ -3,6 +3,28 @@ if (!(Get-PSDrive | where Name -eq HKCR)) {
 	$null = New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
 }
 
+function Log {
+	param (
+		[Parameter(Mandatory)][string] $Msg,
+		[string] $Path='C:\.dnlj\logs',
+		[string] $File
+	)
+	
+	if (!$File) {
+		$File = "default.$(Get-Date -F yyyyMMddTHH).log"
+	}
+	
+	if ($Path) {
+		$File = Join-Path $Path $File
+	}
+	
+	if (!(Test-Path $File)) {
+		$null = New-Item -Force -Path $File
+	}
+	
+	$Msg | Out-File -Append -Encoding ascii -FilePath $File
+}
+
 function Download {
 	param (
 		[Parameter(Mandatory)][string] $Url,
@@ -115,16 +137,14 @@ function Set-Registry {
 		$found = New-Item -Force -Path $Path
 	}
 	
-	if ($VerbosePreference -ne "SilentlyContinue") {
-		$oldValue = $found.GetValue($Name)
-		if ($oldValue -ne $null) {
-			$oldType = $found.GetValueKind($Name)
-			if ($oldValue -cne $Value) {
-				"Setting registry `"$full`" = ${Type}:`"$Value`" (was: ${oldType}:`"$oldValue`")."
-			}
-		} else {
-			"Adding new registry entry `"$full`" = ($Type):`"$Value`"."
+	$oldValue = $found.GetValue($Name)
+	if ($oldValue -ne $null) {
+		$oldType = $found.GetValueKind($Name)
+		if ($oldValue -cne $Value) {
+			Log "Setting registry `"$full`" = ${Type}:`"$Value`" (was: ${oldType}:`"$oldValue`")."
 		}
+	} else {
+		Log "Adding new registry entry `"$full`" = ($Type):`"$Value`"."
 	}
 	
 	Set-ItemProperty -Force -Path $Path -Name $Name -Type $Type -Value $Value
@@ -136,18 +156,17 @@ function Remove-Registry {
 		[Parameter(Mandatory)][string] $Name
 	)
 	
-	if (!($found = Get-ItemProperty $Path $Name -ErrorAction SilentlyContinue)) {
+	if (!($found = Get-Item $Path -ErrorAction SilentlyContinue)) {
 		return
 	}
 	
-	if ($VerbosePreference -ne "SilentlyContinue") {
-		$Value = $found.GetValue($Name)
-		if ($Value -eq $null) { return }
-		
-		$Type = $found.GetValueKind($Name)
-		$Full = Join-Path $Path $Name
-		"Removing registry entry `"$Full`" = ($Type):`"$Value`"."
-	}
+	$Value = $found.GetValue($Name)
+	if ($Value -eq $null) { return }
+	
+	$Type = $found.GetValueKind($Name)
+	$Full = Join-Path $Path $Name
+	Log "Removing registry entry `"$Full`" = ($Type):`"$Value`"."
+	
 	Remove-ItemProperty -Force -Path $Path -Name $Name
 }
 
@@ -160,9 +179,7 @@ function Remove-RegistryKey {
 		return
 	}
 	
-	if ($VerbosePreference -ne "SilentlyContinue") {
-		"Removing registry key `"$Path`""
-	}
+	Log "Removing registry key `"$Path`""
 	Remove-Item -Recurse -Force $Path
 }
 

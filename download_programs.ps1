@@ -1,7 +1,7 @@
 . .\helpers.ps1
 
 try { $null = Stop-Transcript } catch {}
-Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.download_programs.$(Get-Date -F yyyyMMddTHHmmssffff).log"
+Start-Transcript -Append -Path "C:\.dnlj\logs\.dnlj.download_programs.$(Get-Date -F yyyyMMddTHHmmssffff).log"
 
 "Downloading programs."
 

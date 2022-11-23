@@ -2,7 +2,7 @@
 . .\helpers.ps1
 
 try { $null = Stop-Transcript } catch {}
-Start-Transcript -Append -Path "$PSScriptRoot/.dnlj.clean_packages.$(Get-Date -F yyyyMMddTHHmmssffff).log"
+Start-Transcript -Append -Path "C:\.dnlj\logs\.dnlj.clean_packages.$(Get-Date -F yyyyMMddTHHmmssffff).log"
 
 "Removing Windows packages."
 
