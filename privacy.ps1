@@ -210,8 +210,8 @@ $ServicesDisables = @(
 	($ModeSafe, "XblGameSave*"), # Xbox Live Game Save
 	($ModeSafe, "XboxGipSvc*"), # Xbox Accessory Management Service
 	($ModeSafe, "XboxNetApiSvc"), # Xbox Live Networking Service
-	#($ModeSafe, "xboxgip*"),
-	#($ModeSafe, "xinputhid*"),
+	#($ModeSafe, "xboxgip*"), # Will probabl break controller input (Windows.Gaming.Input?)
+	#($ModeSafe, "xinputhid*"), # Will probabl break controller input (xinput)
 
 	# Foxit
 	($ModeNorm, "Foxit*"),
@@ -647,15 +647,17 @@ if ($ModeAggr) {&{
 # `Local Computer Policy > Computer Configuration > Administrative Templates > System > Device Installation > Device Installation Restrictions`
 if ($ModeAggr) {
 	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ExcludeWUDriversInQualityUpdate" -Type DWord -Value 1
+	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" -Name "PreventDeviceMetadataFromNetwork" -Type DWord -Value 1
 }
 
 # Stability
 # See https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update
+# https://learn.microsoft.com/en-us/windows/client-management/device-update-management#windows10version1607forupdatemanagement
 Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "BranchReadinessLevel" -Type DWord -Value 16 # 16 = Semi Annual
 if ($ModeAggr) {
 	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgrade" -Type DWord -Value 1
-	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgradePeriod" -Type DWord -Value 6 # Months
-	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpdatePeriod" -Type DWord -Value 4 # Weeks
+	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpgradePeriod" -Type DWord -Value 8 # Months, max 8
+	Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferUpdatePeriod" -Type DWord -Value 4 # Weeks, max 4
 }
 
 # Quality Updates
@@ -665,7 +667,7 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Na
 
 # Feature Updates
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferFeatureUpdates" -Type DWord -Value 1
-Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferFeatureUpdatesPeriodInDays" -Type DWord -Value 180 # Days, max 365
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferFeatureUpdatesPeriodInDays" -Type DWord -Value 365 # Days, max 365
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "PauseFeatureUpdatesStartTime" -Type String -Value ""
 
 # Windows auto restart (1=disable, 0=enable)
@@ -679,10 +681,9 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\DeliveryOpti
 
 # Disable automatic updates for non-windows things
 if ($ModeAggr) {
-	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" -Name "AutoDownload" -Type DWord -Value 2
-	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -Type DWord -Value 2
+	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" -Name "AutoDownload" -Type DWord -Value 2 # 2 = Disabled, 4 = Enabled
+	Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -Type DWord -Value 2 # 2 = Disabled, 4 = Enabled
 	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Services\7971f918-a847-4430-9279-4a52d1efe18d" -Name "RegisteredWithAU" -Type DWord -Value 0
-	Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" -Name "PreventDeviceMetadataFromNetwork" -Type DWord -Value 1
 }
 
 # Wake for updates
@@ -1347,6 +1348,7 @@ if ($ModeNorm) {
 #Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b4_git_shell\command" -Name "(Default)" -Type String -Value "`"C:\\Program Files\\Git\\git-bash.exe`" `"--cd=%v.`""
 
 # Remove unwanted items
+# TODO: look into ProgrammaticAccessOnly vs LegacyDisable
 Set-Registry -Path "HKCR:\Directory\Background\shell\cmd" -Name "LegacyDisable" -Type String -Value ""
 Set-Registry -Path "HKCR:\Directory\Background\shell\Powershell" -Name "LegacyDisable" -Type String -Value ""
 Set-Registry -Path "HKCR:\Directory\Background\shell\WSL" -Name "LegacyDisable" -Type String -Value ""
@@ -1355,11 +1357,21 @@ Set-Registry -Path "HKCR:\Directory\Background\shell\AnyCode" -Name "LegacyDisab
 Set-Registry -Path "HKCR:\Python.File\shell\Edit with IDLE" -Name "LegacyDisable" -Type String -Value ""
 Set-Registry -Path "HKCR:\Python.File\shell\editwithidle" -Name "LegacyDisable" -Type String -Value ""
 
-# Remove Sharing Context Menu Option ("Give access to")
-Get-ItemPropertyValue -ErrorAction SilentlyContinue -LiteralPath "HKCR:\*\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -LiteralPath "HKCR:\*\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
-Get-ItemPropertyValue -ErrorAction SilentlyContinue -Path "HKCR:\Directory\Background\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -Path "HKCR:\Directory\Background\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
-Get-ItemPropertyValue -ErrorAction SilentlyContinue -Path "HKCR:\Directory\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -Path "HKCR:\Directory\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
-Get-ItemPropertyValue -ErrorAction SilentlyContinue -Path "HKCR:\Drive\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" | ?{ $_ -NotLike '.dnlj.*'} | %{ Set-ItemProperty -Path "HKCR:\Drive\shellex\ContextMenuHandlers\Sharing" -Name "(Default)" -Type String -Value ".dnlj.disabled.$_" }
+# Unwanted shell extensions
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{E2BF9676-5F8F-435C-97EB-11607A5BEDF7}' -Type String -Value 'dnlj: win10 "Share"'
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{F81E9010-6EA4-11CE-A7FF-00AA003CA9F6}' -Type String -Value 'dnlj: win11 "Give access to"'
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{9F156763-7844-4DC4-B2B1-901F640F5155}' -Type String -Value 'dnlj: win11 "Open in Terminal"'
+
+# Attempt to fix 'Group By' in Downloads folder
+# https://superuser.com/questions/1677995/what-registry-key-do-i-need-to-change-to-remove-group-by-downloads-folder-sear
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\Shell\{885A186E-A440-4ADA-812B-DB871B942259}' -Name 'GroupView' -Type DWord -Value 0
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\Shell\{885A186E-A440-4ADA-812B-DB871B942259}' -Name '(Default)' -Type String -Value 'Downloads'
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\ComDlg\{885a186e-a440-4ada-812b-db871b942259}' -Name 'GroupView' -Type DWord -Value 0
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\ComDlg\{885a186e-a440-4ada-812b-db871b942259}' -Name '(Default)' -Type String -Value 'Downloads'
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\ComDlgLegacy\{885a186e-a440-4ada-812b-db871b942259}' -Name 'GroupView' -Type DWord -Value 0
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\ComDlgLegacy\{885a186e-a440-4ada-812b-db871b942259}' -Name '(Default)' -Type String -Value 'Downloads'
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\Shell\{885a186e-a440-4ada-812b-db871b942259}' -Name 'GroupView' -Type DWord -Value 0
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\Shell\{885a186e-a440-4ada-812b-db871b942259}' -Name '(Default)' -Type String -Value 'Downloads'
 
 
 ################################################################################################################################################################

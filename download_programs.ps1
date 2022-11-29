@@ -86,6 +86,11 @@ $programs = @(
 		Page="https://github.com/audacity/audacity/releases/tag/Audacity-3.0.2";
 		Down="https://github.com/audacity/audacity/releases/download/Audacity-3.0.2/audacity-win-3.0.2.exe"
 	},
+	@{ # Veracrypt
+		Type="Install";
+		Page="https://www.veracrypt.fr/en/Downloads.html";
+		Down=""
+	},
 	@{ # VLC
 		Type="Install";
 		Page="https://www.videolan.org/vlc/download-windows.html";
