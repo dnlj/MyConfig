@@ -189,6 +189,56 @@ $programs = @(
 		Page="https://crystalmark.info/en/download/";
 		Down="" # Redirects to latest, but its an html page with a redirect in it. So we cant follow: https://crystalmark.info/redirect.php?product=CrystalDiskInfo
 	},
+	@{ # Cinebench R23
+		Type="Bench";
+		Page="https://www.maxon.net/en/downloads/cinebench-r23-downloads";
+		Down="https://installer.maxon.net/cinebench/CinebenchR23.zip"
+	},
+	@{ # Blender Benchmark
+		Type="Bench";
+		Page="https://opendata.blender.org/";
+		Down=""
+	},
+	@{ # Unigine Heaven
+		Type="Bench";
+		Page="https://benchmark.unigine.com/heaven";
+		Down="https://assets.unigine.com/d/Unigine_Heaven-4.0.exe"
+	},
+	@{ # Unigine Valley
+		Type="Bench";
+		Page="https://benchmark.unigine.com/valley";
+		Down="https://assets.unigine.com/d/Unigine_Valley-1.0.exe"
+	},
+	@{ # Unigine Superposition
+		Type="Bench";
+		Page="https://benchmark.unigine.com/superposition";
+		Down="https://assets.unigine.com/d/Unigine_Superposition-1.1.exe"
+	},
+	@{ # OCCT
+		Type="Bench";
+		Page="https://www.ocbase.com/download";
+		Down="https://dl.ocbase.com/per/stable/OCCT.exe"
+	},
+	@{ # SPEC Workstation
+		Type="Bench";
+		Page="https://gwpg.spec.org/benchmarks/benchmark/specworkstation-3_1/";
+		Down=""
+	},
+	@{ # SPEC ViewPerf
+		Type="Bench";
+		Page="https://gwpg.spec.org/benchmarks/benchmark/specviewperf-2020-v3-1/";
+		Down=""
+	},
+	@{ # MemTest86
+		Type="Bench";
+		Page="https://www.memtest86.com/download.htm";
+		Down="https://www.memtest86.com/downloads/memtest86-usb.zip"
+	},
+	@{ # y-cruncher
+		Type="Bench";
+		Page="http://www.numberworld.org/y-cruncher/#Download";
+		Down=""
+	},
 ################################################################################
 # Dev Tools 
 ################################################################################

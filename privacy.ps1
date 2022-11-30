@@ -1362,6 +1362,9 @@ Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extens
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{F81E9010-6EA4-11CE-A7FF-00AA003CA9F6}' -Type String -Value 'dnlj: win11 "Give access to"'
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{9F156763-7844-4DC4-B2B1-901F640F5155}' -Type String -Value 'dnlj: win11 "Open in Terminal"'
 
+# Hide '3D Objects' in explorer
+Remove-RegistryKey -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}'
+
 # Attempt to fix 'Group By' in Downloads folder
 # https://superuser.com/questions/1677995/what-registry-key-do-i-need-to-change-to-remove-group-by-downloads-folder-sear
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\Shell\{885A186E-A440-4ADA-812B-DB871B942259}' -Name 'GroupView' -Type DWord -Value 0
