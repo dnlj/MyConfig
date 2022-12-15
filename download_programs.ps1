@@ -257,6 +257,11 @@ $programs = @(
 		Page="https://notepad-plus-plus.org/downloads/";
 		Down=""
 	},
+	@{ # Git
+		Type="Install";
+		Page="https://git-scm.com/download/win";
+		Down=""
+	},
 	@{ # Autoruns
 		Type="Tools";
 		Page="https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns";

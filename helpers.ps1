@@ -126,15 +126,24 @@ function Set-RegistryOwner {
 
 function Set-Registry {
 	param (
-		[Parameter(Mandatory)][string] $Path,
+		[Parameter(Mandatory, ParameterSetName='Path')][string] $Path,
+		[Parameter(Mandatory, ParameterSetName='LiteralPath')][string] $LiteralPath,
 		[Parameter(Mandatory)][string] $Name,
 		[Parameter(Mandatory)] $Type,
 		[Parameter(Mandatory)] $Value
 	)
 	
-	$full = Join-Path $Path $Name
-	if (!($found = Get-Item $Path -ErrorAction SilentlyContinue)) {
-		$found = New-Item -Force -Path $Path
+	
+	if ($Path) {
+		$full = Join-Path $Path $Name
+		if (!($found = Get-Item -Path $Path -ErrorAction SilentlyContinue)) {
+			$found = New-Item -Force -Path $Path
+		}
+	} else {
+		$full = Join-Path $LiteralPath $Name
+		if (!($found = Get-Item -LiteralPath $LiteralPath -ErrorAction SilentlyContinue)) {
+			$found = New-Item -Force -Path $LiteralPath
+		}
 	}
 	
 	$oldValue = $found.GetValue($Name)
@@ -147,7 +156,11 @@ function Set-Registry {
 		Log "Adding new registry entry `"$full`" = ($Type):`"$Value`"."
 	}
 	
-	Set-ItemProperty -Force -Path $Path -Name $Name -Type $Type -Value $Value
+	if ($Path) {
+		Set-ItemProperty -Force -Path $Path -Name $Name -Type $Type -Value $Value
+	} else {
+		Set-ItemProperty -Force -LiteralPath $LiteralPath -Name $Name -Type $Type -Value $Value
+	}
 }
 
 function Remove-Registry {

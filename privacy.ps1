@@ -1202,6 +1202,9 @@ foreach ($set in $ExplorerSettings) {
 	Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name $set.Name -Type DWord -Value $set.Val
 }
 
+# Hide explorer "Home"
+Set-Registry -Path "HKCU:\Software\Classes\CLSID\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}" -Name "System.IsPinnedToNameSpaceTree" -Type DWord -Value 0
+
 # Disable Language Switching Hotkeys
 # Yes, these are strings not dword.
 Set-Registry -Path "HKCU:\Keyboard Layout\Toggle" -Name "Language Hotkey" -Type String -Value "3" # 3=Disabled
@@ -1375,6 +1378,11 @@ Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\ComDl
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\ComDlgLegacy\{885a186e-a440-4ada-812b-db871b942259}' -Name '(Default)' -Type String -Value 'Downloads'
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\Shell\{885a186e-a440-4ada-812b-db871b942259}' -Name 'GroupView' -Type DWord -Value 0
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Shell\Bags\AllFolders\Shell\{885a186e-a440-4ada-812b-db871b942259}' -Name '(Default)' -Type String -Value 'Downloads'
+
+# "Add to Favorites"
+Set-Registry -LiteralPath "HKCR:\*\shell\pintohomefile" -Name "ProgrammaticAccessOnly" -Type DWord -Value 1
+Set-Registry -Path "HKCR:\Directory\shell\AddToPlaylistVLC" -Name "ProgrammaticAccessOnly" -Type DWord -Value 1
+Set-Registry -Path "HKCR:\Directory\shell\AnyCode" -Name "ProgrammaticAccessOnly" -Type DWord -Value 1
 
 
 ################################################################################################################################################################
