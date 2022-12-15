@@ -1364,6 +1364,7 @@ Set-Registry -Path "HKCR:\Python.File\shell\editwithidle" -Name "LegacyDisable" 
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{E2BF9676-5F8F-435C-97EB-11607A5BEDF7}' -Type String -Value 'dnlj: win10 "Share"'
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{F81E9010-6EA4-11CE-A7FF-00AA003CA9F6}' -Type String -Value 'dnlj: win11 "Give access to"'
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{9F156763-7844-4DC4-B2B1-901F640F5155}' -Type String -Value 'dnlj: win11 "Open in Terminal"'
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{7AD84985-87B4-4a16-BE58-8B72A5B390F7}' -Type String -Value 'dnlj: "Cast to Device"'
 
 # Hide '3D Objects' in explorer
 Remove-RegistryKey -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}'
