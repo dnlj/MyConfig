@@ -110,6 +110,7 @@ Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudSto
 ################################################################################################################################################################
 "Configuring services..."
 # Always include a trailing "*" to account for per-user services
+# TODO: should probably add a option to change to manual instead of disable also
 $ServicesDisables = @(
 	# General / Unsorted
 	# ! DONT DISABLE ! ($ModeSafe, "DoSvc*"), # Delivery Optimization # DONT DISABLE: Breaks Windows Update, even if not using delivery optimization.
@@ -117,7 +118,7 @@ $ServicesDisables = @(
 	($ModeSafe, "edgeupdate*"), # Edge update services
 	($ModeSafe, "MicrosoftEdgeElevationService*"),
 	($ModeNorm, "icssvc*"), # Windows Mobile Hotspot Service
-	($ModeAggr, "InstallService*"), # Microsoft Store Install Service
+	#($ModeAggr, "InstallService*"), # Microsoft Store Install Service
 	($ModeAggr, "InventorySvc*"), # Inventory and Compatibility Appraisal service
 	#($ModeAggr, "P9RdrService*"), # Plan 9 File Server - Part of WSL
 	($ModeSafe, "MapsBroker*"), # Downloaded Maps Manager
@@ -134,11 +135,13 @@ $ServicesDisables = @(
 	# ! DONT DISABLE ! ($ModeAggr, "DeviceAssociationBrokerSvc*"), # DONT DISABLE: Breaks Bluetooth
 	($ModeSafe, "NPSMSvc*"), # Now playing session manager
 	# ! DONT DISABLE ! ($ModeSafe, "AppReadiness"), # App Readiness - Windows Store app install and setup # DONT DISABLE: Breaks Windows Update.
-	($ModeAggr, "cbdhsvc*"), # Clipboard service - for enhanceed clipboard: history, device sharing, etc.
+	# ! DONT DISABLE ! ($ModeAggr, "CaptureService*"), # DONT DISABLE: Breaks snipping tool (Win+Shift+S)
+	# ! DONT DISABLE ! ($ModeAggr, "cbdhsvc*"), # Clipboard service - for enhanceed clipboard: history, device sharing, etc. - DONT DISABLE: Breaks snipping tool (Win+Shift+S)
 	# ! DONT DISABLE ! ($ModeAggr,"TextInputManagementService*"), # DONT DISABLE: breaks keyboard input.
 	
-	# TODO: UNTESTED
-	($ModeAggr, "TokenBroker*"), # This service is used by Web Account Manager to provide single-sign-on to apps and services.
+	# TODO: UNTESTED - Might be what broke Microsoft Store? not sure i changed a bunch of stuff
+	# Breaks xbox sign in - and maybe some Store stuff?
+	#($ModeAggr, "TokenBroker*"), # This service is used by Web Account Manager to provide single-sign-on to apps and services.
 	
 	# Privacy, Tracking, and Telemetry
 	($ModeSafe, "SSDPSRV"), # SSDP Discovery - Simple Search and Discovery Protocol
@@ -205,7 +208,6 @@ $ServicesDisables = @(
 	# Disabling some of these may break XInput and/or Windows.Gaming.Input
 	($ModeSafe, "BcastDVR*"),
 	($ModeSafe, "GamingService*"), # "GamingServices" and "GamingServicesNet"
-	($ModeSafe, "CaptureService*"),
 	($ModeSafe, "XblAuthManager*"), # Xbox Live Auth Manager
 	($ModeSafe, "XblGameSave*"), # Xbox Live Game Save
 	($ModeSafe, "XboxGipSvc*"), # Xbox Accessory Management Service
@@ -400,8 +402,21 @@ $FirewallDisables = @(
 	($ModeSafe, "*Bytedance*")
 )
 
-$FirewallDisables = $FirewallDisables | Where {$_[0]} | %{$_[1]}
+$FirewallAdds = @(
+	($ModeSafe, "TextInputHost", "%SystemRoot%\SystemApps\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TextInputHost.exe") # Block "Tenor" ad in emoji menu
+)
 
+# TODO: untested
+#foreach ($rule in $FirewallAdds) {
+#	if ($rule[0]) {
+#		# TODO: first need to check if rule exists and delete it in case we run this script multiple times
+#		$name = $rule[1]
+#		$null = New-NetFirewallRule -DisplayName ".dnlj.$name.out" -Direction Outbound -Program $rule[2] -Action Block -Enabled "True"
+#		$null = New-NetFirewallRule -DisplayName ".dnlj.$name.in" -Direction Inbound -Program $rule[2] -Action Block -Enabled "True"
+#	}
+#}
+
+$FirewallDisables = $FirewallDisables | Where {$_[0]} | %{$_[1]}
 $FirewallRules = Get-NetFirewallRule | Where Enabled -EQ True # huge speed up
 foreach ($rule in $FirewallDisables) {
 	$found = $FirewallRules | Where {`
@@ -507,9 +522,10 @@ Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAc
 Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\graphicsCaptureWithoutBorder\NonPackaged" -Name "Value" -Type String -Value "Deny"
 
 # Background Apps
-Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsRunInBackground" -Type DWord -Value 2 # 0 = User Control, 1 = Allow, 2 = Deny
-Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplication" -Name "GlobalUserDisabled" -Type DWord -Value 1 # 1 = Off
-Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplication" -Name "BackgroundAppGlobalToggle" -Type DWord -Value 0 # 0 = Off
+# Seems to break SOME games that are installed through Windows Store (Xbox App) when alt tabbing (Astroneers, Sea of Thieves)
+#Set-Registry -Path "HKLM:\Software\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsRunInBackground" -Type DWord -Value 0 # 0 = User Control, 1 = Allow, 2 = Deny
+#Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Name "GlobalUserDisabled" -Type DWord -Value 1 # 1 = Off
+#Set-Registry -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Name "BackgroundAppGlobalToggle" -Type DWord -Value 0 # 0 = Off
 
 
 ################################################################################################################################################################
@@ -692,6 +708,11 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\
 
 # Automatic sign on after restart
 Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableAutomaticRestartSignOn" -Type DWord -Value 1
+
+# Visaul Studio Background Updates
+# If left enabled it will randomly start using 100% cpu while you are actively doing things.
+Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup" -Name "BackgroundDownloadDisabled" -Type DWord -Value 1
+
 
 
 ################################################################################################################################################################
@@ -1046,6 +1067,11 @@ Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Pus
 Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoTileApplicationNotification" -Type DWord -Value 1
 Set-Registry -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoCloudApplicationNotification" -Type DWord -Value 1
 
+# Windows Hello for Business
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft" -Name "PassportForWork" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork" -Name "Enabled" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork" -Name "DisablePostLogonProvisioning" -Type DWord -Value 1
+
 
 ################################################################################################################################################################
 # App Aliases
@@ -1341,7 +1367,19 @@ Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b2_powershell\command"
 if ($ModeNorm) {
 	Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "(Default)" -Type String -Value "Open WSL terminal here"
 	Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl" -Name "Icon" -Type String -Value "wsl.exe"
-	Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl\command" -Name "(Default)" -Type String -Value "wsl.exe --cd `"%v`""
+	# This should just be: "wsl.exe --cd `"%v`""
+	# But as of 22h2? that doesnt work.
+	# I THINK this is an issue with Windows selecting the one in: C:\Program Files\WindowsApps\MicrosoftCorporationII.WindowsSubsystemForLinux_1.0.3.0_x64__8wekyb3d8bbwe
+	# and then having some permission error? Not sure. Event viewer shows error 0x23F.
+	#
+	# Trying to launch that file manually we get:
+	#
+	# {Application Error} The application was unable to start correctly (0x%lx). Click OK to close the application.
+	# Error code: Wsl/Service/CreateInstance/CreateVm/0x8007023f
+	#
+	# https://github.com/microsoft/WSL/issues/5092
+	# https://github.com/microsoft/WSL/issues/5401
+	Set-Registry -Path "HKCR:\Directory\Background\shell\dnlj_b3_wsl\command" -Name "(Default)" -Type String -Value "`"C:\Windows\System32\wsl.exe`" --cd `"%v`""
 }
 
 # Git Bash
@@ -1365,6 +1403,7 @@ Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extens
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{F81E9010-6EA4-11CE-A7FF-00AA003CA9F6}' -Type String -Value 'dnlj: win11 "Give access to"'
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{9F156763-7844-4DC4-B2B1-901F640F5155}' -Type String -Value 'dnlj: win11 "Open in Terminal"'
 Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{7AD84985-87B4-4a16-BE58-8B72A5B390F7}' -Type String -Value 'dnlj: "Cast to Device"'
+Set-Registry -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked' -Name '{B8CDCB65-B1BF-4B42-9428-1DFDB7EE92AF}' -Type String -Value 'dnlj: "Extract All..."'
 
 # Hide '3D Objects' in explorer
 Remove-RegistryKey -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}'

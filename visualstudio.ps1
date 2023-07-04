@@ -2,17 +2,18 @@
 
 $Extensions = @(
 	"idex.colorthemedesigner2022",
-	"KirAntipov.LineSorterByKir",
-	"MadsKristensen.AddNewFile",
+	#"KirAntipov.LineSorterByKir", # Added in 2022
+	#"MadsKristensen.AddNewFile", # 2019
 	"MadsKristensen.AddNewFile64",
 	"MadsKristensen.CopyNice",
 	#"MadsKristensen.LearntheShortcut",
 	"MadsKristensen.Shifter",
 	"MadsKristensen.ShowSelectionLength",
-	"MikeWard-AnnArbor.VSColorOutput",
+	#"MikeWard-AnnArbor.VSColorOutput", # 2019
 	"MikeWard-AnnArbor.VSColorOutput64",
 	"stkb.Rewrap-18980",
-	"thomaswelen.SelectNextOccurrence"
+	#"thomaswelen.SelectNextOccurrence", # 2019
+	"thomaswelen.SelectNextOccurrence64bit"
 )
 
 # TODO: BeeDarkTheme

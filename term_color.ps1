@@ -15,6 +15,9 @@
 # * Windows shortcut (.lnk) files
 #################################################################################################################################################
 
+# TODO: .bashrc or .profile export LS_COLOR (see linux files, used by fd)
+# TODO: windows user env var LS_COLORS (same as linux, used by fd)
+
 # Mintty (Git for Windows bash)
 &{
 	Copy -Path "./colors/dnlj.onedark.minttyrc" -Destination (New-Item -Force -ItemType Directory -Path "$env:USERPROFILE\.mintty\themes")
