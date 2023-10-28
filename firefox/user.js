@@ -17,6 +17,11 @@ user_pref("extensions.pocket.enabled", false);
 user_pref("ui.osk.enabled", false); // On screen keyboard
 //user_pref("browser.download.forbid_open_with", true); // Don't show "Open With" download option
 
+// Extensions
+user_pref("extensions.quarantinedDomains.enabled", false);
+user_pref("extensions.quarantinedDomains.list", ""); // TODO: could be useful, maybe add paypal, banks, email, etc.
+
+
 // Disable disk cache, we have RAM.
 // You can instead move to a diff drive if you want with: browser.cache.disk.parent_directory
 // about:cache

@@ -3,6 +3,8 @@ if (!(Get-PSDrive | where Name -eq HKCR)) {
 	$null = New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
 }
 
+# TODO: Every single action in here should be logging everything it does. Probably add a `Log -Loud ...` option to print in addition to logging to file.
+
 function Log {
 	param (
 		[Parameter(Mandatory)][string] $Msg,

@@ -1,11 +1,12 @@
 /** https://www.userchrome.org */
 /** https://www.reddit.com/r/FirefoxCSS/ */
+/** https://firefox-source-docs.mozilla.org/devtools-user/browser_toolbox/index.html */
 
 /*** BEGIN Firefox 89 (6/2/2021) (6/12/2021) ***/
 /* Disable animations (fullscreen, new tab, etc.) */
 * {
 	/* Apparently the reason this breaks things is due to having both an animation and transition. To totally disable animations you can do unset !important on animation and transition. */
-	/*animation-delay: none !important;*/
+	/*! animation-delay: none !important; */
 	/*transition: none !important;*/
 
 	/* Settings these to zero seems to break some things like tabs, address bar, and bookmark edit menu. Probably some callbacks that trigger on transition end or something. */
@@ -35,7 +36,7 @@
 	--arrowpanel-menuitem-padding: 4px 8px !important;
 	/* Dense burger menu */
 	--arrowpanel-border-radius: 0px !important;
-	/* Doesnt seem to actually work? */
+	--dnlj-tab-highlight-color: #0a84ff;
 }
 
 /* Disable "Add xyz" search engine suggestions in right click menu */
@@ -94,34 +95,35 @@ arrowscrollbox {
 
 /* Tab style. Tabs are tabs not buttons. */
 tab>stack {
-	margin-top: 3px !important;
 	/* Make space for shadow since we kill --proton-tab-block-margin */
+	margin-top: 3px !important;
 }
 
 .tab-background {
 	margin-block: 0 !important;
-	;
 }
 
-.tab-background[selected=true] {
-	background: var(--toolbar-bgcolor) !important;
+.tab-background[selected] {
 	/* Match tabs to the rest of the UI */
-	border-top: 1px solid var(--focus-outline-color) !important;
+	background: var(--toolbar-bgcolor) !important;
+
 	/* Line at top of active tab */
+	/*border-top: 1px solid var(--focus-outline-color) !important;*/
+	border-top: 1px solid var(--dnlj-tab-highlight-color) !important;
 }
 
 .tabbrowser-tab {
-	--tab-label-mask-size: 0em !important;
 	/* Get rid of grey fade over text that eats half the tab */
+	--tab-label-mask-size: 0em !important;
 }
 
 /* Make current tab apparent during multiselect */
-.tab-background:not([selected=true])[multiselected=true] {
+.tab-background:not([selected])[multiselected] {
 	box-shadow: none !important;
 }
 
 /* Background tab outline / border */
-.tab-background:not([selected=true]):not([multiselected=true]) {
+.tab-background:not([selected]):not([multiselected]) {
 	background: rgba(0, 0, 0, 0.05) !important;
 	/*border: 1px solid var(--chrome-content-separator-color) !important;
 	border-bottom: none !important;*/
