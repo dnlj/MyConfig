@@ -720,6 +720,23 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup" -Name "Backgrou
 ################################################################################################################################################################
 "Configuring Microsoft Edge..."
 
+# TODO: This needs updated, edge adds more bloat every other day.
+#       Disable "Autofill passwords"
+#           - This doesn't just auto fill passwords. It also signs you in to random websites using your Microsoft account.
+#       Privacy > Services:
+#           "Show opportunities to support causes and nonprofits you care about"
+#           "Get notifications of related things you can explore with Discover"
+#           "Let Microsoft Edge help keep your tabs organized"
+#       Sidebar:
+#           "Personalize my top sites in customize sidebar"
+#           "Allow sidebar apps to show notifications"
+#       Start, home and new tabs:
+#           "Preload your new tab page for a faster experience"
+#       Profiles > "Share browsing data with other Windows features"
+#       Appearance:
+#           "Try the new look and feel of Microsoft Edge" - Random whitespace all over the place.
+
+
 # Chromium
 # Can also be configured under HKCU if you want.
 # See: `edge://policy/` > "Show policies with no value"

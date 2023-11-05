@@ -166,6 +166,11 @@ $programs = @(
 		Page="https://www.softwareok.com/?Download=DesktopOK";
 		Down="https://www.softwareok.com/Download/DesktopOK_Installer_x64.zip"
 	},
+	@{ # iperf
+		Type="Tools";
+		Page="https://iperf.fr";
+		Down="https://iperf.fr/download/windows/iperf-3.1.3-win64.zip"
+	},
 ################################################################################
 # Performance / Benchmarking / Monitoring
 ################################################################################
