@@ -2,6 +2,12 @@
 // https://github.com/DonQuixoteI/Firefox-UserGuide/blob/master/doc/user.js.md
 // https://github.com/arkenfox/user.js
 
+// TODO: I wonder if we can read prefs in here? Then would could only run this
+//       once if `dnlj.user.setup` = false/missing and that would allow us to
+//       change them later? Might only want to do that for specific settings to
+//       avoid Mozilla changing things behind our back like re-enabling
+//       pocket/ads/"suggestions"/etc. like they have done in the past
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // User Options
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

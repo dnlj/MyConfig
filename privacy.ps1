@@ -28,6 +28,11 @@ Start-Transcript -Append -Path "C:\.dnlj\logs\.dnlj.settings.$(Get-Date -F yyyyM
 $StartTime = Get-Date
 
 ################################################################################################################################################################
+# TODO
+################################################################################################################################################################
+# Hide "Gallery" in explorer sidebar: prepend .dnlj.disabled: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\.dnlj.disabled.NameSpace_41040327
+
+################################################################################################################################################################
 # Notes
 ################################################################################################################################################################
 # https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services
@@ -721,6 +726,7 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup" -Name "Backgrou
 "Configuring Microsoft Edge..."
 
 # TODO: This needs updated, edge adds more bloat every other day.
+# Disable all single sign on options: edge://settings/profiles/multiProfileSettings
 #       Disable "Autofill passwords"
 #           - This doesn't just auto fill passwords. It also signs you in to random websites using your Microsoft account.
 #       Privacy > Services:
@@ -735,7 +741,6 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup" -Name "Backgrou
 #       Profiles > "Share browsing data with other Windows features"
 #       Appearance:
 #           "Try the new look and feel of Microsoft Edge" - Random whitespace all over the place.
-
 
 # Chromium
 # Can also be configured under HKCU if you want.
@@ -860,6 +865,27 @@ if ($ModeAggr) {
 # Privacy
 ################################################################################################################################################################
 "Configuring privacy settings..."
+
+# TODO: Untested
+# "VC++ Technology Improvement Program" (vctip.exe) - Part of Visual Studio Telemetry
+# This is more than just a privacy/annoyance. I have had vctip.exe stay open
+# busy in the background for hours until the computer is restarted. Long after
+# all Visual Studio related programs are closed. This prevents updates and
+# installing extensions. A quick search shows others have had similar issues:
+# https://developercommunity.visualstudio.com/t/what-is-vctip-and-how-to-disable-it/416745
+#
+# These will need updated as new version come out.
+# 
+# From: https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2017/ide/visual-studio-experience-improvement-program?view=vs-2017#registry-settings
+#  0 is opted out (turn off the VSCEIP)
+#  1 is opted in (turn on the VSCEIP)
+Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\14.0\SQM" -Name "OptIn" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\15.0\SQM" -Name "OptIn" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\16.0\SQM" -Name "OptIn" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\17.0\SQM" -Name "OptIn" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\18.0\SQM" -Name "OptIn" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\19.0\SQM" -Name "OptIn" -Type DWord -Value 0
+Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\20.0\SQM" -Name "OptIn" -Type DWord -Value 0
 
 # Narrator QuickStart
 Set-Registry -Path "HKCU:\Software\Microsoft\Narrator\QuickStart" -Name "SkipQuickStart" -Type DWord -Value 1
