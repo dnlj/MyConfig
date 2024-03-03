@@ -38,6 +38,8 @@ try {
 # Extensions
 ################################################################################################################################################################
 "Installing VSCode extensions..."
+
+# Generate with: code --list-extensions
 $Extensions = @(
 	"bierner.github-markdown-preview",
 	"bierner.markdown-checkbox",
@@ -46,7 +48,19 @@ $Extensions = @(
 	"bierner.markdown-mermaid",
 	"bierner.markdown-preview-github-styles",
 	"bierner.markdown-yaml-preamble",
-	"EditorConfig.EditorConfig"
+	"editorconfig.editorconfig",
+	#"kamikillerto.vscode-colorize", # Adds color backgrounds to #hex colors. Useful for theme dev.
+	"mrmlnc.vscode-scss",
+	"ms-python.debugpy",
+	"ms-python.python",
+	"ms-python.vscode-pylance",
+	#"platformio.platformio-ide", # PlatformIO (arduino/teensy/microcontroller dev)
+	"redhat.vscode-xml",
+	"ritwickdey.liveserver",
+	"stkb.rewrap",
+	"streetsidesoftware.code-spell-checker",
+	"vue.volar", # Vue support
+	#"zero-plusplus.vscode-autohotkey-debug",
 )
 
 foreach ($Ext in $Extensions) {
