@@ -1,35 +1,55 @@
 // Place your key bindings in this file to overwrite the defaults
 [
-	//{
-	//	"key": "ctrl+d",
-	//	"command": "editor.action.copyLinesDownAction",
-	//},
 	{
 		"key": "ctrl+alt+w",
-		"command": "workbench.action.closeActiveEditor"
+		"command": "workbench.action.closeActiveEditor",
 	},
 	{
 		"key": "tab",
 		"command": "selectNextSuggestion",
-		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus",
 	},
 	{
 		"key": "down",
 		"command": "-selectNextSuggestion",
-		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus",
 	},
 	{
 		"key": "ctrl+tab",
 		"command": "selectPrevSuggestion",
-		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus",
 	},
 	{
 		"key": "up",
 		"command": "-selectPrevSuggestion",
-		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+		"when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus",
 	},
 	{
 		"key": "ctrl+i",
-		"command": "editor.emmet.action.wrapWithAbbreviation"
-	}
+		"command": "editor.emmet.action.wrapWithAbbreviation",
+	},
+	{
+		"key": "alt+e",
+		"command": "editor.action.inspectTMScopes",
+	},
+	{
+		"key": "ctrl+u",
+		"command": "-cursorUndo",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "ctrl+u",
+		"command": "editor.action.transformToUppercase",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "ctrl+shift+u",
+		"command": "editor.action.transformToLowercase",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "ctrl+shift+u",
+		"command": "-workbench.action.output.toggleOutput",
+		"when": "workbench.panel.output.active",
+	},
 ]

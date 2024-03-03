@@ -2,7 +2,7 @@
 {
 	"editor.insertSpaces": false,
 	"editor.minimap.enabled": false,
-	"editor.autoIndent": "full",
+	"editor.autoIndent": "keep",
 	"editor.detectIndentation": false,
 	"editor.autoClosingBrackets": "never",
 	"editor.trimAutoWhitespace": false,
@@ -33,7 +33,7 @@
     "python.languageServer": "Pylance",
 	"jupyter.sendSelectionToInteractiveWindow": false,
 	"editor.colorDecorators": false,
-	"editor.lightbulb.enabled": false,
+	"editor.lightbulb.enabled": "off",
 	"vetur.completion.autoImport": false,
 	"vetur.validation.template": false,
 	"eslint.validate": [
@@ -56,13 +56,69 @@
 	"liveServer.settings.CustomBrowser": "firefox",
 	"liveServer.settings.fullReload": true,
 	"editor.multiCursorModifier": "ctrlCmd",
-	"cSpell.enableFiletypes": [
-		"!plaintext"
-	],
 	"diffEditor.wordWrap": "off",
 	"editor.accessibilitySupport": "off",
 	"editor.wordWrapColumn": 120,
 	"markdown-preview-github-styles.colorTheme": "light",
 	"debug.console.wordWrap": false,
-	"diffEditor.maxFileSize": 300
+	"diffEditor.maxFileSize": 300,
+	"security.workspace.trust.enabled": false,
+	"workbench.startupEditor": "none",
+	"editor.codeLens": false,
+	"workbench.colorTheme": "Nord Deep",
+	"workbench.preferredDarkColorTheme": "Nord Deep",
+	"git.openRepositoryInParentFolders": "never",
+	"ahk++.formatter.indentCodeAfterLabel": false,
+	"ahk++.formatter.allowedNumberOfEmptyLines": -1,
+	"ahk++.file.executePath": "D:\\Daniel\\Documents\\AH_Dawn\\Dawn_64.exe",
+	"ahk++.file.helpPath": "",
+	"ahk++.file.compilePath": "",
+	"cSpell.ignoreWords": [
+		"hfov"
+	],
+	"cSpell.enabled": true,
+	"cSpell.language": "en,en-US",
+	"cSpell.userWords": [
+		"corequisite",
+		"dnlj",
+		"kanagawa",
+		"ronin",
+		"sumi"
+	],
+	"cmake.showOptionsMovedNotification": false,
+	"platformio-ide.autoOpenPlatformIOIniFile": false,
+	"breadcrumbs.enabled": false,
+	"Lua.semantic.keyword": true,
+	"editor.tokenColorCustomizations": {
+		// Use Ctrl+Shift+P: "Developer: Inspect Editor Tokens and Scopes"
+		"[Default Dark+]": {
+			"textMateRules":[
+				{
+					"scope": "keyword.operator.lua",
+					"settings": {
+						"foreground": "#C586C0"
+					}
+				}
+			]
+		}
+	},
+	"window.zoomPerWindow": false,
+	"debug.onTaskErrors": "abort",
+	"colorize.languages": [
+		"lua",
+		"json",
+		"jsonc",
+		"jsonl",
+		"css",
+		"sass",
+		"scss",
+		"less",
+		"postcss",
+		"sss",
+		"stylus",
+		"xml",
+		"svg",
+	],
+	"window.customMenuBarAltFocus": false,
+	"window.enableMenuBarMnemonics": false
 }
