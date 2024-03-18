@@ -328,6 +328,7 @@ Disable-TasksLike $TaskDisables
 # Firewall
 ################################################################################################################################################################
 "Configuring firewall..."
+# TODO: probably needs updated, check for copilot, bing, etc.
 # Get-NetFirewallRule | Format-Table DisplayName, Group, DisplayGroup, Description -AutoSize
 $FirewallDisables = @(
 	# Specific apps
@@ -725,6 +726,8 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup" -Name "Backgrou
 ################################################################################################################################################################
 "Configuring Microsoft Edge..."
 
+# TODO: disable bing/copilot bloat: https://www.reddit.com/r/sysadmin/comments/12hzha4/microsoft_says_you_can_disable_bing_button/
+
 # TODO: This needs updated, edge adds more bloat every other day.
 # Disable all single sign on options: edge://settings/profiles/multiProfileSettings
 #       Disable "Autofill passwords"
@@ -865,6 +868,10 @@ if ($ModeAggr) {
 # Privacy
 ################################################################################################################################################################
 "Configuring privacy settings..."
+
+# TODO: Untested
+# TODO: look for other copilot keys
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -Name "TurnOffWindowsCopilot" -Type DWord -Value 1
 
 # TODO: Untested
 # "VC++ Technology Improvement Program" (vctip.exe) - Part of Visual Studio Telemetry
