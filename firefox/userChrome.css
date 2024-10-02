@@ -2,6 +2,13 @@
 /** https://www.reddit.com/r/FirefoxCSS/ */
 /** https://firefox-source-docs.mozilla.org/devtools-user/browser_toolbox/index.html */
 
+/*
+	To Enable/Dev:
+		Debug Toolbox > Settings > Enable browser chrome and add-on debugging toolbox
+		Debug Toolbox > Settings > Enable remote debugging
+		Burger Menu > More Tools > Browser Toolbox
+*/
+
 /*** BEGIN Firefox 89 (6/2/2021) (6/12/2021) ***/
 /* Disable animations (fullscreen, new tab, etc.) */
 * {
@@ -200,3 +207,12 @@ menupopup :-moz-any(menu, menuitem) {
 }
 
 /*** END Firefox 77 (June 2, 2020) Override URL bar enlargement ***/
+
+/*** BEGIN Firefox 131 (October 2, 2024) Hide all tabs button ***/
+/* They remove the ability to hide this button with settings and about:config.
+   Very cool. Excellent software. I've always thought I could use even less space.
+*/
+#alltabs-button {
+	display: none !important;
+}
+/*** END Firefox 131 (October 2, 2024) Hide all tabs button ***/
