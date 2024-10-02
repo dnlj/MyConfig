@@ -10,6 +10,11 @@ function Find-Firefox {
 	return $install
 }
 
+# TODO: disable: "Allow websites to perform privacy-preserving ad measurement"
+#       https://blog.privacyguides.org/2024/07/14/mozilla-disappoints-us-yet-again-2/
+#
+# TODO: disable all about:config "fixup"
+
 ################################################################################################################################################################
 # Install
 ################################################################################################################################################################

@@ -21,6 +21,7 @@ user_pref("identity.fxaccounts.enabled", false); // Firefox Account
 user_pref("layout.spellcheckDefault", 0);
 user_pref("extensions.pocket.enabled", false);
 user_pref("ui.osk.enabled", false); // On screen keyboard
+user_pref("accessibility.typeaheadfind.enablesound", false); // Disable the beep when there are not find (Ctrl+F) results.
 //user_pref("browser.download.forbid_open_with", true); // Don't show "Open With" download option
 
 // Extensions
@@ -131,7 +132,7 @@ user_pref("media.hardwaremediakeys.enabled", false);
 // Studies / Experiments
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 user_pref("app.normandy.enabled", false);
-user_pref("app.shield.optoutstudies.enabled", false);
+user_pref("app.shield.optoutstudies.enabled", false); // false = studies disabled.
 user_pref("experiments.enabled", false);
 user_pref("experiments.supported", false);
 user_pref("app.normandy.api_url", "");
@@ -200,6 +201,7 @@ user_pref("browser.focus.disallowed_regions", "aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,
 user_pref("browser.preferences.moreFromMozilla", false);
 user_pref("browser.promo.focus.enabled", false);
 user_pref("browser.promo.pin.enabled", false);
+user_pref("browser.urlbar.suggest.trending", false);
 user_pref("identity.mobilepromo.android", "");
 user_pref("identity.mobilepromo.ios", "");
 user_pref("identity.sendtabpromo.url", "");

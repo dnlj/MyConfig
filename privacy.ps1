@@ -873,6 +873,15 @@ if ($ModeAggr) {
 # TODO: look for other copilot keys
 Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -Name "TurnOffWindowsCopilot" -Type DWord -Value 1
 
+# TODO: these three may not be correct. The MS docs don't list registry keys for
+#       these, only policies, but they are under the same as TurnOffWindowsCopilot so
+#       this is just a guess. If they don't have keys we will need to add a way to set
+#       actual policies instead of the registry.
+#       https://www.reddit.com/r/Windows11/comments/1d1ef1q/registry_entries_to_disable_copilot_recall_feature/
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -Name "DisableAIDataAnalysis" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI" -Name "DisableAIDataAnalysis" -Type DWord -Value 1
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -Name "AllowImageCreator" -Type DWord -Value 0
+
 # TODO: Untested
 # "VC++ Technology Improvement Program" (vctip.exe) - Part of Visual Studio Telemetry
 # This is more than just a privacy/annoyance. I have had vctip.exe stay open
@@ -886,6 +895,7 @@ Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -N
 # From: https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2017/ide/visual-studio-experience-improvement-program?view=vs-2017#registry-settings
 #  0 is opted out (turn off the VSCEIP)
 #  1 is opted in (turn on the VSCEIP)
+Set-Registry -Path "HKLM:\Software\Policies\Microsoft\VisualStudio\SQM" -Name "OptIn" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\14.0\SQM" -Name "OptIn" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\15.0\SQM" -Name "OptIn" -Type DWord -Value 0
 Set-Registry -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VSCommon\16.0\SQM" -Name "OptIn" -Type DWord -Value 0
