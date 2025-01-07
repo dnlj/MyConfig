@@ -55,6 +55,8 @@ $apps = @(
 	#"MicrosoftWindows.Client.CBS",
 	"Disney.37853FC22B2CE",
 	"SpotifyAB.SpotifyMusic",
+	"*HalifaxBaseGame*", # Gears of War 5??? Why does this install itself.
+	#"Microsoft*Copilot*", # Untested TODO: uninstall copilot
 ################################################################################
 # Sponsored
 ################################################################################

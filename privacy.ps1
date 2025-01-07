@@ -1236,6 +1236,8 @@ Set-Registry -Path "HKLM:\SOFTWARE\Microsoft\Windows Search\Gather\Windows\Syste
 # Preferences
 ################################################################################################################################################################
 "Configuring preferences..."
+
+# TODO: Ctrl+F "Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" and merge any other sections here.
 $ExplorerSettings = @(
 	@{Name="HideIcons";               Val=0},
 	@{Name="ShowCompColor";           Val=1},
@@ -1269,6 +1271,7 @@ $ExplorerSettings = @(
 	@{Name="TaskbarSd";         Val=1}, # Show Desktop button
 	@{Name="ExtendedUIHoverTime"; Val=1}, # Disable taskbar hover thumbnail preview delay
 	@{Name="TaskbarAnimations";   Val=0}, # Disable taskbar hover thumbnail preview fade in/out
+	@{Name="ShowCopilotButton";   Val=0}, # Hide Copilot install button
 
 	# Explorer
 	@{Name="DontPrettyPath";        Val=1}, # Show true file case
