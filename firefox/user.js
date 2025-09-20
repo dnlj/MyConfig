@@ -8,6 +8,9 @@
 //       avoid Mozilla changing things behind our back like re-enabling
 //       pocket/ads/"suggestions"/etc. like they have done in the past
 
+// TODO: Always show address bar:
+//       https://www.reddit.com/r/firefox/comments/1fwljdc/always_show_the_address_in_the_location_bar/
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // User Options
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,7 +21,7 @@ user_pref("browser.safebrowsing.downloads.remote.enabled", false); // Does NOT d
 user_pref("findbar.highlightAll", true);
 user_pref("general.smoothScroll", false);
 user_pref("identity.fxaccounts.enabled", false); // Firefox Account
-user_pref("layout.spellcheckDefault", 0);
+//user_pref("layout.spellcheckDefault", 0);
 user_pref("extensions.pocket.enabled", false);
 user_pref("ui.osk.enabled", false); // On screen keyboard
 user_pref("accessibility.typeaheadfind.enablesound", false); // Disable the beep when there are not find (Ctrl+F) results.
@@ -28,7 +31,6 @@ user_pref("accessibility.typeaheadfind.enablesound", false); // Disable the beep
 user_pref("extensions.quarantinedDomains.enabled", false);
 user_pref("extensions.quarantinedDomains.list", ""); // TODO: could be useful, maybe add paypal, banks, email, etc.
 
-
 // Disable disk cache, we have RAM.
 // You can instead move to a diff drive if you want with: browser.cache.disk.parent_directory
 // about:cache
@@ -37,9 +39,8 @@ user_pref("extensions.quarantinedDomains.list", ""); // TODO: could be useful, m
 // In private windows we have `forceMediaMemoryCache`, but there isn't an option for normal windows.
 //
 // One option would be to put your profile folder on a ram disk, but then you have to deal with those repercussions.
-// https://wiki.archlinux.org/title/Firefox/Profile_on_RAM
-// https://wiki.archlinux.org/title/profile-sync-daemon
-//
+// - https://wiki.archlinux.org/title/Firefox/Profile_on_RAM
+// - https://wiki.archlinux.org/title/profile-sync-daemon
 user_pref("browser.cache.disk.enable", false);
 user_pref("browser.cache.disk_cache_ssl", false);
 user_pref("browser.cache.memory.enable", true);
@@ -65,6 +66,8 @@ user_pref("browser.privatebrowsing.enable-new-logo", false);
 user_pref("browser.privateWindowSeparation.enabled", true); // Gives private windows a separate icon for alt-tab selection
 //user_pref("ui.prefersReducedMotion", 1);
 user_pref("ui.prefersReducedMotion", 0); // If not disabled explicitly disabled FireFox will try to use OS settings (which changes loading icon, don't care for it, whats the point of a loading icon if it doesn't move)
+user_pref("widget.windows.mica", false);  // Disable mica which overrides user settings and userchrome.css
+user_pref("widget.windows.mica.popups", 0); // Disable mica popups which overrides user settings and userchrome.css
 
 // Downloads
 user_pref("browser.download.always_ask_before_handling_new_types", true);
@@ -116,6 +119,20 @@ user_pref("privacy.socialtracking.notification.enabled", false);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// AI/ML
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+user_pref("browser.ml.enable", false);
+user_pref("browser.ml.enabled", false);
+user_pref("browser.ml.chat.enabled", false);
+user_pref("browser.ml.chat.provider", "");
+user_pref("browser.ml.chat.sidebar", false);
+user_pref("extensions.ml.enabled", false);
+user_pref("browser.ml.linkPreview.enabled", false);
+user_pref("browser.tabs.groups.smart.enabled", false);
+user_pref("browser.tabs.groups.smart.userEnabled", false);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Notifications / Tips / Recommendations
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Addon recommendations
@@ -142,6 +159,7 @@ user_pref("messaging-system.rsexperimentloader.enabled", false);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mozilla: Telemetry / Reporting / Tracking
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+user_pref("browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts", false);
 user_pref("app.update.lastUpdateTime.telemetry_modules_ping", 2147483647);
 user_pref("beacon.enabled", false);
 user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
@@ -242,7 +260,7 @@ user_pref("dom.push.serverURL", "");
 
 // Fingerprinting
 // https://wiki.mozilla.org/Security/Fingerprinting
-user_pref("privacy.resistFingerprinting", true);
+//user_pref("privacy.resistFingerprinting", true); // Breaks per-site zoom
 //user_pref("privacy.window.maxInnerWidth", 1600);
 //user_pref("privacy.window.maxInnerHeight", 900);
 //user_pref("privacy.resistFingerprinting.letterboxing", true);

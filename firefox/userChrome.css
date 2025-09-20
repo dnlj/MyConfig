@@ -32,17 +32,27 @@
 :root {
 	/*--tab-min-height: 30px !important; /* Tab Height */
 	--toolbarbutton-border-radius: 0px !important;
-	/* Rounded buttons */
+	
+	/* Space under tabs */
 	--proton-tab-block-margin: 0px !important;
+	--tab-block-margin: 0px !important;
+	
 	/* Space under tabs */
 	--tab-border-radius: 0px !important;
+	
 	/* Rounded tabs */
 	--arrowpanel-border-radius: 0px !important;
 	--toolbar-bgcolor: #fff !important;
+	
 	/* Boost contrast of toolbar */
 	--arrowpanel-menuitem-padding: 4px 8px !important;
+	
 	/* Dense burger menu */
 	--arrowpanel-border-radius: 0px !important;
+	--arrowpanel-menuitem-border-radius: 0px !important;
+	--menuitem-border-radius: 0px !important;
+	--panel-border-radius: 0px !important;
+	
 	--dnlj-tab-highlight-color: #0a84ff;
 }
 
@@ -84,12 +94,16 @@ input.findbar-textbox {
 
 /* I don't want all my menus to be circles */
 menupopup,
-arrowscrollbox {
+arrowscrollbox,
+panel
+{
+	/* NOTE: This has no effect if about:config widget.windows.mica.popups is set. Mica seems to override user settings. */
 	border-radius: 0px !important;
 }
 
 /* Shrink outline around urlbar so it there is room for the actual url in it */
-#urlbar-background {
+#urlbar-background,
+.urlbar-background {
 	--focus-outline-width: 1px;
 	--focus-outline: var(--focus-outline-width) solid var(--focus-outline-color) !important;
 	box-shadow: none !important;
@@ -106,9 +120,9 @@ tab>stack {
 	margin-top: 3px !important;
 }
 
-.tab-background {
+/*.tab-background {
 	margin-block: 0 !important;
-}
+}*/
 
 .tab-background[selected] {
 	/* Match tabs to the rest of the UI */

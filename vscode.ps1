@@ -59,7 +59,7 @@ $Extensions = @(
 	"ritwickdey.liveserver",
 	"stkb.rewrap",
 	"streetsidesoftware.code-spell-checker",
-	"vue.volar", # Vue support
+	"vue.volar" # Vue support
 	#"zero-plusplus.vscode-autohotkey-debug",
 )
 
