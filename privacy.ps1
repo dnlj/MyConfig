@@ -225,6 +225,11 @@ $ServicesDisables = @(
 
 	# Logitech GHub
 	($ModeNorm, "LGHUB*")
+	
+	# Intel
+	($ModeNorm, "jhi_service*") # ME application loader
+	($ModeNorm, "WMIRegistrationService*") # ME Registration
+	($ModeAggr, "cplspcon*") # DRM Protect "enables communication with Content Protection HDCP HW". Might break some things trying to use DRM? No issues so far.
 )
 
 # We manually iterate the registry instead of using `Get-Service` here because
